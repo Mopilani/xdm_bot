@@ -23,9 +23,12 @@ void main(List<String> args) async {
     'faqs': faqEndpoint,
   };
 
+  var confFile = File('srv.cfg');
+  var conf = json.decode(await confFile.readAsString());
+
   Bot(
     // Insert your bot token here
-    token: '6661898001:AAE1PDjsBwSRHO-KKalNzuxgIltdM0lP0_4',
+    token: conf['tbot_token'],
     // Once the bot is ready this function will be called
     // You can start the bot here
     onReady: (bot) => bot.start(clean: true),
