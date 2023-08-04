@@ -21,10 +21,15 @@ final router = Router()
   ..post('/acommand/<phone>/<command>', _command)
   ..get('/all-lessons', allLessons)
   ..get('/month-lessons', monthLessons)
+  ..get('/log', getLog)
   ..get('/faq/<about>', faqEndpoint)
   ..get('/lesson/<lessonName>', getLesson);
 
 // DONE
+Response getLog(Request req) {
+  return Response.ok('');
+}
+
 Response greating(Request req) {
   return Response.ok(greatingMsg);
 }
