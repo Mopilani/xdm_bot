@@ -11,6 +11,7 @@ import 'faq_class.dart';
 import 'functions.dart';
 import 'io_functions.dart';
 import 'lesson_class.dart';
+import 'log.dart';
 
 final router = Router()
   ..get('/greating', greating)
@@ -27,7 +28,7 @@ final router = Router()
 
 // DONE
 Response getLog(Request req) {
-  return Response.ok('');
+  return Response.ok(Log().readAsJson());
 }
 
 Response greating(Request req) {

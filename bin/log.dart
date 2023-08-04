@@ -14,6 +14,8 @@ class Log {
     return _ins!;
   }
 
+  String readAsJson() => json.encode(logLines);
+
   List<String> logLines = [];
 
   void log(Object obj) {
