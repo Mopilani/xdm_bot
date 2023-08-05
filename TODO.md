@@ -10,3 +10,15 @@
 - show my watches
 
 - admin: monitor server
+
+- show month viewd lessons (alessons)
+
+- show month viewd lessons (mlessons)
+
+- show most viewd lessons (vlessons)
+
+- show week lessons (wlessons)
+
+- auto redirect messages
+
+- show greartings
