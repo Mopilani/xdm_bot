@@ -22,3 +22,8 @@
 - auto redirect messages
 
 - show greartings
+
+- dumb files
+
+- use mongo db
+
