@@ -1,6 +1,6 @@
 - Add help command
 - Add about command
-- Add under maintainance state
+- Add under maintainanc e state
 - Add search lesson
 
 - Show my lessons
@@ -27,3 +27,6 @@
 
 - use mongo db
 
+- Add greating at 8 oclock
+
+- periodicly backup data on telegram

@@ -169,6 +169,23 @@ Date & Time: ${formate(updateTime)}.""";
       UserChatState.faqCommands,
     ),
     BotCommand(
+      'show',
+      'Show the faq',
+      'show',
+      (authorId, command, body) async {
+        var faqId = userChatStates[authorId]!['faqId'];
+        // var change = (command.split(':').last);
+        var authorInMap = authors[authorId];
+        if (authorInMap == null) {
+          return 'You must have username to add faqs';
+        }
+        var faq =
+            freqAskedQues[FAQ.getKeyByIdFrom(authorInMap.username!, faqId)];
+        return faq!.show();
+      },
+      UserChatState.faqCommands,
+    ),
+    BotCommand(
       'delete',
       'Delete FAQ',
       'delete:<id> , delete:1',
