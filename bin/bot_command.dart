@@ -12,16 +12,20 @@ class BotCommand {
   final FutureOr<String> Function(String arg, String arg2, dynamic body)
       function;
   final UserChatState? neededState;
+  final bool? adminCommand;
 
-  final List<String> adminsList = <String>[];
+  static final List<String> adminsList = <String>[
+    '249901503116@c.us',
+  ];
 
   BotCommand(
     this.command,
     this.descripton,
     this.usage,
     this.function,
-    this.neededState,
-  );
+    this.neededState, {
+    this.adminCommand = false,
+  });
 
   String show() => '''!$command
   $descripton
@@ -114,9 +118,17 @@ class BotCommand {
     } catch (e) {
       return 'Command $command Not Found $e';
     }
+
     if (botCommand == null) {
       return 'Command $command Not Found';
     } else {
+      if (botCommand.adminCommand == true) {
+        if (adminsList.contains(authroId)) {
+          // continue;
+        } else {
+          return 'This command just allowed for admins';
+        }
+      }
       if (userChatStates[authroId] == null) {
         userChatStates[authroId] = {
           'state': UserChatState.normalMode,
