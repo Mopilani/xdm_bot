@@ -11,8 +11,9 @@ import 'package:shelf_router/shelf_router.dart';
 import 'bot_command.dart';
 import 'endpoints.dart';
 import 'io_functions.dart';
-import 'lesson_class.dart';
+import 'lesson.dart';
 
+var conf;
 void main(List<String> args) async {
   Map<String, Function(Request)> supportedCommands = {
     'commands': commands,
@@ -24,7 +25,7 @@ void main(List<String> args) async {
   };
 
   var confFile = File('srv.cfg');
-  var conf = json.decode(await confFile.readAsString());
+  conf = json.decode(await confFile.readAsString());
 
   Bot(
     // Insert your bot token here

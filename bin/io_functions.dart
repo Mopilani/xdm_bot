@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'author.dart';
 import 'functions.dart';
-import 'lesson_class.dart';
-import 'faq_class.dart';
+import 'lesson.dart';
+import 'faq.dart';
 
 // var lessonsList = """مرحا بك في القروب
 // انا روبوت يمكنني تقديم المساعد والشروحات اليك

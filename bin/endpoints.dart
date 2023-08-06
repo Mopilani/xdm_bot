@@ -7,10 +7,10 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'author.dart';
 import 'bot_command.dart';
-import 'faq_class.dart';
+import 'faq.dart';
 import 'functions.dart';
 import 'io_functions.dart';
-import 'lesson_class.dart';
+import 'lesson.dart';
 import 'log.dart';
 
 final router = Router()

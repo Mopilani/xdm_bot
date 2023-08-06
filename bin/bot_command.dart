@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'author.dart';
-import 'faq_class.dart';
+import 'faq.dart';
 import 'functions.dart';
 import 'io_functions.dart';
-import 'lesson_class.dart';
+import 'lesson.dart';
 
 class BotCommand {
   final String command, descripton, usage;
