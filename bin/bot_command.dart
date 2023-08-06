@@ -13,6 +13,8 @@ class BotCommand {
       function;
   final UserChatState? neededState;
 
+  final List<String> adminsList = <String>[];
+
   BotCommand(
     this.command,
     this.descripton,
