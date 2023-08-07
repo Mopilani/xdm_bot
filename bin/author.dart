@@ -335,7 +335,7 @@ class Author {
           int.parse(timeSegs[2]),
           int.parse(timeSegs[3]),
         );
-        var r = await ServerTODO.editOnce(gid, id, time.toString(), null);
+        var r = await ServerTODO.editOnce(gid, id, time, null, null);
         return r;
       },
       UserChatState.all,
@@ -351,7 +351,23 @@ class Author {
         var timeSegs = change.split(':');
         var id = timeSegs[0];
         var content = timeSegs[1];
-        var r = await ServerTODO.editOnce(gid, id, null, content);
+        var r = await ServerTODO.editOnce(gid, id, null, content, null);
+        return r;
+      },
+      UserChatState.all,
+      adminCommand: true,
+    ),
+    BotCommand(
+      'periodicly',
+      'Periodicly execute the task',
+      'periodicly:id:true|false',
+      (authorId, command, body) async {
+        var change = body[command] as String;
+        var gid = body['gid'];
+        var timeSegs = change.split(':');
+        var id = timeSegs[0];
+        var periodicly = (timeSegs[1] == 'true');
+        var r = await ServerTODO.editOnce(gid, id, null, null, periodicly);
         return r;
       },
       UserChatState.all,
