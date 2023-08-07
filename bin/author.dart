@@ -428,6 +428,21 @@ class Author {
       UserChatState.all,
       adminCommand: true,
     ),
+    BotCommand(
+      'send',
+      '',
+      '',
+      (authorId, command, body) async {
+        await http.post(
+          Uri.parse('http://localhost:$xport/post'),
+          headers: {'receiver': groupsList.entries.first.key},
+          body: content,
+        );
+        return 'OK';
+      },
+      UserChatState.all,
+      adminCommand: true,
+    ),
   ];
 
   static final xport = 8156;
@@ -443,9 +458,10 @@ class Author {
             nd.year,
             nd.month,
             nd.day,
-            8,
+            6,
+            0,
           ).millisecondsSinceEpoch <
-          DateTime.now().millisecondsSinceEpoch) {
+          nd.millisecondsSinceEpoch) {
         for (var entry in [...groupsList.entries]) {
           if (!groupsList[entry.key]) {
             await http.post(
@@ -466,7 +482,16 @@ Map<String, dynamic> groupsList = {
   // 'done': ,
 };
 
-var content = "";
+var content = """https://chat.whatsapp.com/FrWExYrIHIX14ANgzfK14W
+دة قروب يجمع الكل سناير والناس الجديدة للاستفسارات والأسئلة
+الناس اللي حتنزل يوم 17 يوليو
+خشو القروب دة
+https://chat.whatsapp.com/D2BHQm52QYwL4slVrTeX5J
+الناس الجديدة وحتنزل شهر 8
+خشو القروب دة
+https://chat.whatsapp.com/K1ZIISnsJPIKhMyBbDGfLk
+الناس اللي عابرة وعاوزة تتناقش نقاشات كبيرة كبيرة تخش القروب دة😂
+https://chat.whatsapp.com/K8rROUa4FJCKsaQQ7ewcBt """;
 // var taskList = [
 // {
 //   time: ,
