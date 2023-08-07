@@ -86,7 +86,7 @@ void main(List<String> args) async {
   await loadAuthors();
   await loadLessons();
   await loadfreqAskedQues();
-  await ServerTODO.loadTasks();
+  // await ServerTODO.loadTasks();
   BotCommand.loadCommands();
 
   // Use any available host or container IP (usually `0.0.0.0`).
