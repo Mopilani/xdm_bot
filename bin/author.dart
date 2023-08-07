@@ -1,6 +1,7 @@
 import 'bot_command.dart';
 import 'functions.dart';
 import 'io_functions.dart';
+import 'server_todo.dart';
 
 class Author {
   String? id,
@@ -296,24 +297,50 @@ class Author {
       UserChatState.all,
     ),
     BotCommand(
-      'mywatches',
-      'Show My Lessons',
-      'mylessons',
+      'watches',
+      'Show My Watches',
+      'lessons',
       (authorId, command, body) {
         return 'userChatStates: $userChatStates\n'
             'authors: $authors\n';
       },
-      UserChatState.all,
+      UserChatState.authorCommands,
     ),
     BotCommand(
       'todo',
-      'todo:content:time',
+      'todo:Name Of Your Todo',
       'mylessons',
       (authorId, command, body) {
-        
+        var name = body[command];
+        var gid = body['gid'];
+        // var time = ;
+        ServerTODO().addToDo(name, gid);
         return 'TODO Saved Admin!';
       },
       UserChatState.all,
+      adminCommand: true,
+    ),
+    BotCommand(
+      'time',
+      'Edit task time',
+      'time:id:day:hour:minute',
+      (authorId, command, body) {
+        var timeSerise = body[command] as String;
+        var timeSegs = timeSerise.split(':');
+        var gid = body[command];
+        var dateTime = DateTime.now();
+        var id = timeSegs[0];
+        var time = DateTime(
+          dateTime.year,
+          int.parse(timeSegs[1]),
+          int.parse(timeSegs[2]),
+          int.parse(timeSegs[3]),
+        );
+        ServerTODO().editOnce(gid, id, time.toString(), null);
+        return 'TODO Saved Admin!';
+      },
+      UserChatState.all,
+      adminCommand: true,
     ),
   ];
 }
