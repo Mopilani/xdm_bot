@@ -106,6 +106,7 @@ class ServerTODO {
     for (var dryTask in doContent['todoList']) {
       tasks.add(dryTask);
     }
+    ServerTODO.tick();
   }
 }
 
