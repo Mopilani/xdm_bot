@@ -69,6 +69,7 @@ class ServerTODO {
   }
 
   Future<String> addToDo(name, gid, [time, content]) async {
+    var id = doContent.entries.length + 1;
     if (doContent[gid] == null) {
       doContent[gid] = {
         // 'name': '',
@@ -88,7 +89,7 @@ class ServerTODO {
 
     var doContentFile = File('todo.json');
     await doContentFile.writeAsString(json.encode(doContent));
-    return 'Added Successfuly';
+    return 'Added Successfuly Id $id';
   }
 
   static Future<void> loadTasks() async {

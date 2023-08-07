@@ -309,7 +309,7 @@ class Author {
     BotCommand(
       'todo',
       'todo:Name Of Your Todo',
-      'mylessons',
+      'Create new task',
       (authorId, command, body) async {
         var name = body[command];
         var gid = body['gid'];
