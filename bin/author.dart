@@ -501,14 +501,17 @@ Map<String, dynamic> groupsList = {
   // 'done': ,
 };
 
-var content = """https://chat.whatsapp.com/FrWExYrIHIX14ANgzfK14W
+var content = """ALX Sudan Main Group
+https://chat.whatsapp.com/FrWExYrIHIX14ANgzfK14W
 دة قروب يجمع الكل سناير والناس الجديدة للاستفسارات والأسئلة
-الناس اللي حتنزل يوم 17 يوليو
-خشو القروب دة
+
+Cohort 18
 https://chat.whatsapp.com/D2BHQm52QYwL4slVrTeX5J
-الناس الجديدة وحتنزل شهر 8
-خشو القروب دة
+
+Cohort 19
 https://chat.whatsapp.com/K1ZIISnsJPIKhMyBbDGfLk
+
+ALX Pro ✨
 الناس اللي عابرة وعاوزة تتناقش نقاشات كبيرة كبيرة تخش القروب دة😂
 https://chat.whatsapp.com/K8rROUa4FJCKsaQQ7ewcBt """;
 // var taskList = [
