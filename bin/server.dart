@@ -12,6 +12,7 @@ import 'bot_command.dart';
 import 'endpoints.dart';
 import 'io_functions.dart';
 import 'lesson.dart';
+import 'server_todo.dart';
 
 var conf;
 void main(List<String> args) async {
@@ -85,6 +86,7 @@ void main(List<String> args) async {
   await loadAuthors();
   await loadLessons();
   await loadfreqAskedQues();
+  await ServerTODO.loadTasks();
   BotCommand.loadCommands();
 
   // Use any available host or container IP (usually `0.0.0.0`).
