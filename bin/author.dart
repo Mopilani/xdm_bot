@@ -453,7 +453,7 @@ class Author {
   static Future<void> tick() async {
     running = true;
     while (running) {
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: 30));
       print('TICK');
       var nd = DateTime.now();
       if ((DateTime(
