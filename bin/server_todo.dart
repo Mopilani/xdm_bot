@@ -104,7 +104,7 @@ class ServerTODO {
     var doContentFile = File('todo.json');
     doContent = json.decode(await doContentFile.readAsString());
     for (var dryTask in doContent['todoList']) {
-      tasks.add(dryTask);
+      tasks.add(Task.fromMap(dryTask));
     }
     ServerTODO.tick();
   }
@@ -122,7 +122,7 @@ class Task {
   late int? statusCode;
   late bool? periodicly;
 
-  static Task fromJson(Map data) => Task(
+  static Task fromMap(Map data) => Task(
         DateTime.parse(data['time']),
         data['content'],
         data['statusCode'],
