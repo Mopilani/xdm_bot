@@ -461,8 +461,8 @@ class Author {
                 nd.month,
                 nd.day,
                 6,
-                16,
-                15,
+                27,
+                0,
               ).millisecondsSinceEpoch <
               nd.millisecondsSinceEpoch) &&
           DateTime(
@@ -470,7 +470,7 @@ class Author {
                 nd.month,
                 nd.day,
                 6,
-                16,
+                27,
                 30,
               ).millisecondsSinceEpoch >
               nd.millisecondsSinceEpoch) {

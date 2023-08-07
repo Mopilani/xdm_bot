@@ -91,6 +91,7 @@ void main(List<String> args) async {
   var file = File('tpm.json');
   var r = await file.readAsString();
   groupsList = json.decode(r);
+  Author.tick();
   BotCommand.loadCommands();
 
   // Use any available host or container IP (usually `0.0.0.0`).
