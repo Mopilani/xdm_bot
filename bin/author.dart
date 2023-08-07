@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import 'bot_command.dart';
 import 'functions.dart';
@@ -412,15 +413,54 @@ class Author {
       UserChatState.all,
       adminCommand: true,
     ),
+    BotCommand(
+      'tick',
+      '',
+      '',
+      (authorId, command, body) async {
+        var file = File('tpm.json');
+        var r = await file.readAsString();
+        groupsList = json.decode(r);
+        return 'OK';
+      },
+      UserChatState.all,
+      adminCommand: true,
+    ),
   ];
+
+  static final xport = 8156;
+
+  static var running = false;
+
+  static Future<void> tick() async {
+    running = true;
+    while (running) {
+      await Future.delayed(Duration(seconds: 30));
+      var nd = DateTime.now();
+      if (DateTime(
+            nd.year,
+            nd.month,
+            nd.day,
+            nd.hour,
+            nd.minute,
+            nd.second,
+          ).millisecondsSinceEpoch <
+          DateTime.now().millisecondsSinceEpoch) {
+        await http.post(
+          Uri.parse('http://localhost:$xport/post'),
+          body: content,
+        );
+      }
+    }
+  }
 }
 
 List<String> groupsList = [];
-
+var content = "";
 // var taskList = [
 // {
 //   time: ,
 // }
 // ];
 
-var content = "";
+
