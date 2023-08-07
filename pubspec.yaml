@@ -11,6 +11,7 @@ dependencies:
   shelf: ^1.4.0
   shelf_router: ^1.1.0
   dart_telegram_bot: ^1.0.0
+  http: 
 
 dev_dependencies:
   http: ^0.13.0

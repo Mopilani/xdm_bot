@@ -28,18 +28,32 @@ class Lesson {
 
   String getKeyByTitle() => title;
 
-  static String showAll(LessonsCount count) {
-    var msg = count == LessonsCount.all ? 'All Lessons:\n' : 'This month:\n';
+  static String showAll(LessonsCount count, [authorId]) {
+    var msg =
+        ((count == LessonsCount.all) ? 'All Lessons:\n' : 'This month:\n');
+    msg = ((count == LessonsCount.author) ? 'Author Lessons:\n' : msg);
+
     if (lessonsByTitle.isEmpty) {
       msg = '''$msg
 
 لا يوجد شروحات حتى الان.''';
     }
-    for (var lessonEntry in lessonsById.entries) {
-      msg = '''
+    if (authorId != null) {
+      for (var lessonEntry in lessonsById.entries) {
+        if (lessonEntry.key.contains(authorId)) {
+          msg = '''
 $msg
 *${lessonEntry.value.title}*
   L:${lessonEntry.value.getKeyByAUAndId()}''';
+        }
+      }
+    } else {
+      for (var lessonEntry in lessonsById.entries) {
+        msg = '''
+$msg
+*${lessonEntry.value.title}*
+  L:${lessonEntry.value.getKeyByAUAndId()}''';
+      }
     }
     return '$msg\n\n'
         ':اكتب اسم الدرس هكذا\n'

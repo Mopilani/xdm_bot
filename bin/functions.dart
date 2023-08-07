@@ -2,6 +2,7 @@
 enum LessonsCount {
   all,
   thisMonth,
+  author,
 }
 
 enum UserChatState {

@@ -275,6 +275,45 @@ class Author {
       },
       UserChatState.all,
     ),
-    // 'privacy',
+    BotCommand(
+      'mylessons',
+      'Show My Lessons',
+      'mylessons',
+      (authorId, command, body) {
+        return 'userChatStates: $userChatStates\n'
+            'authors: $authors\n';
+      },
+      UserChatState.all,
+    ),
+    BotCommand(
+      'myfaqs',
+      'Show My Lessons',
+      'mylessons',
+      (authorId, command, body) {
+        return 'userChatStates: $userChatStates\n'
+            'authors: $authors\n';
+      },
+      UserChatState.all,
+    ),
+    BotCommand(
+      'mywatches',
+      'Show My Lessons',
+      'mylessons',
+      (authorId, command, body) {
+        return 'userChatStates: $userChatStates\n'
+            'authors: $authors\n';
+      },
+      UserChatState.all,
+    ),
+    BotCommand(
+      'todo',
+      'todo:content:time',
+      'mylessons',
+      (authorId, command, body) {
+        
+        return 'TODO Saved Admin!';
+      },
+      UserChatState.all,
+    ),
   ];
 }
