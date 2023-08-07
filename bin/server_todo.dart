@@ -32,21 +32,39 @@ class ServerTODO {
   var doContent = {};
 
   /// Do Content Arch:
-  /// { gid : {
+  /// { gid : 
+  ///      {
   ///          name : string,
-  ///          todoList : {
-  ///              content : Content,
-  ///              time: time,
-  ///          }
+  ///          todoList :
+  ///                [
+  ///                  {
+  ///                     content : Content,
+  ///                     time: time,
+  ///                   }
+  ///                ]
+  ///           }
   ///      }
   /// }
   ///
 
   Future<void> addToDo(gid, content, time) async {
-    doContent[gid] = {
-      content: content,
-      time: time,
-    };
+    if (doContent[gid] == null) {
+      doContent[gid] = {
+        // 'name': '',
+        'todoList': [
+          {
+            'content': content,
+            'time': time,
+          },
+        ],
+      };
+    } else {
+      (doContent[gid]['todoList'] as List).add({
+        'content': content,
+        'time': time,
+      });
+    }
+
     var doContentFile = File('todo.json');
     await doContentFile.writeAsString(json.encode(doContent));
   }
