@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 
 class ServerTODO {
@@ -23,11 +26,55 @@ class ServerTODO {
 
   var tasks = <Task>[];
   // var inNext10Mins = <Task>[];
+
+  final serverDoFilename = 'do.json';
+
+  var doContent = {};
+
+  /// Do Content Arch:
+  /// { gid : {
+  ///          name : string,
+  ///          todoList : {
+  ///              content : Content,
+  ///              time: time,
+  ///          }
+  ///      }
+  /// }
+  ///
+
+  Future<void> addToDo(gid, content, time) async {
+    doContent[gid] = {
+      content: content,
+      time: time,
+    };
+    var doContentFile = File('todo.json');
+    await doContentFile.writeAsString(json.encode(doContent));
+  }
+
+  Future<void> loadTasks() async {
+    var doContentFile = File('todo.json');
+    doContent = json.decode(await doContentFile.readAsString());
+    for (var dryTask in doContent['todoList']) {
+      tasks.add(dryTask);
+    }
+  }
 }
 
 class Task {
-  Task(this.time, this.content);
+  Task(
+    this.time,
+    this.content, [
+    this.statusCode,
+  ]);
   final DateTime time;
   final String content;
-  late int statusCode;
+  late int? statusCode;
+
+  static Task fromJson(Map data) =>
+      Task(DateTime.parse(data['time']), data['content'], data['statusCode']);
+
+  Map<String, dynamic> asMap() => {
+        'time': time.toString(),
+        'content': content,
+      };
 }
