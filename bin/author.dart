@@ -310,12 +310,11 @@ class Author {
       'todo',
       'todo:Name Of Your Todo',
       'mylessons',
-      (authorId, command, body) {
+      (authorId, command, body) async {
         var name = body[command];
         var gid = body['gid'];
-        // var time = ;
-        ServerTODO().addToDo(name, gid);
-        return 'TODO Saved Admin!';
+        var r = await ServerTODO().addToDo(name, gid);
+        return r;
       },
       UserChatState.all,
       adminCommand: true,
@@ -324,10 +323,10 @@ class Author {
       'time',
       'Edit task time',
       'time:id:day:hour:minute',
-      (authorId, command, body) {
+      (authorId, command, body) async {
         var timeSerise = body[command] as String;
+        var gid = body['gid'];
         var timeSegs = timeSerise.split(':');
-        var gid = body[command];
         var dateTime = DateTime.now();
         var id = timeSegs[0];
         var time = DateTime(
@@ -336,8 +335,24 @@ class Author {
           int.parse(timeSegs[2]),
           int.parse(timeSegs[3]),
         );
-        ServerTODO().editOnce(gid, id, time.toString(), null);
-        return 'TODO Saved Admin!';
+        var r = await ServerTODO.editOnce(gid, id, time.toString(), null);
+        return r;
+      },
+      UserChatState.all,
+      adminCommand: true,
+    ),
+    BotCommand(
+      'content',
+      'Edit task content',
+      'content:id:The post that you want to share',
+      (authorId, command, body) async {
+        var change = body[command] as String;
+        var gid = body['gid'];
+        var timeSegs = change.split(':');
+        var id = timeSegs[0];
+        var content = timeSegs[1];
+        var r = await ServerTODO.editOnce(gid, id, null, content);
+        return r;
       },
       UserChatState.all,
       adminCommand: true,
