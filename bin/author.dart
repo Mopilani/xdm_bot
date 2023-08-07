@@ -394,7 +394,7 @@ class Author {
       (authorId, command, body) async {
         var file = File('tpm.json');
         groupsList.addAll({
-          body[command]: false,
+          body['gid']: false,
         });
         await file.writeAsString(json.encode(groupsList));
         return 'OK';
@@ -403,7 +403,7 @@ class Author {
       adminCommand: true,
     ),
     BotCommand(
-      'loadGroups',
+      'loadgroups',
       '',
       '',
       (authorId, command, body) async {
@@ -420,9 +420,7 @@ class Author {
       '',
       '',
       (authorId, command, body) async {
-        var file = File('tpm.json');
-        var r = await file.readAsString();
-        groupsList = json.decode(r);
+        tick();
         return 'OK';
       },
       UserChatState.all,
@@ -435,8 +433,11 @@ class Author {
       (authorId, command, body) async {
         await http.post(
           Uri.parse('http://localhost:$xport/post'),
-          headers: {'receiver': groupsList.entries.first.key},
-          body: content,
+          headers: {
+            'receiver': groupsList.entries.first.key,
+            HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
+          },
+          body: json.encode({'content': content}),
         );
         return 'OK';
       },
@@ -452,23 +453,41 @@ class Author {
   static Future<void> tick() async {
     running = true;
     while (running) {
-      await Future.delayed(Duration(seconds: 30));
+      await Future.delayed(Duration(seconds: 1));
+      print('TICK');
       var nd = DateTime.now();
-      if (DateTime(
-            nd.year,
-            nd.month,
-            nd.day,
-            6,
-            0,
-          ).millisecondsSinceEpoch <
-          nd.millisecondsSinceEpoch) {
+      if ((DateTime(
+                nd.year,
+                nd.month,
+                nd.day,
+                6,
+                16,
+                15,
+              ).millisecondsSinceEpoch <
+              nd.millisecondsSinceEpoch) &&
+          DateTime(
+                nd.year,
+                nd.month,
+                nd.day,
+                6,
+                16,
+                30,
+              ).millisecondsSinceEpoch >
+              nd.millisecondsSinceEpoch) {
+        print("IT'S TIME");
         for (var entry in [...groupsList.entries]) {
+          print("POP");
           if (!groupsList[entry.key]) {
+            print("PIP");
             await http.post(
               Uri.parse('http://localhost:$xport/post'),
-              headers: {'receiver': entry.key},
-              body: content,
+              headers: {
+                'receiver': entry.key,
+                HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
+              },
+              body: json.encode({'content': content}),
             );
+            print("FIOOO");
             groupsList[entry.key] = true;
           }
         }

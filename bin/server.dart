@@ -8,6 +8,7 @@ import 'package:dart_telegram_bot/telegram_entities.dart' as telegram_entities;
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
+import 'author.dart';
 import 'bot_command.dart';
 import 'endpoints.dart';
 import 'io_functions.dart';
@@ -87,6 +88,9 @@ void main(List<String> args) async {
   await loadLessons();
   await loadfreqAskedQues();
   // await ServerTODO.loadTasks();
+  var file = File('tpm.json');
+  var r = await file.readAsString();
+  groupsList = json.decode(r);
   BotCommand.loadCommands();
 
   // Use any available host or container IP (usually `0.0.0.0`).
