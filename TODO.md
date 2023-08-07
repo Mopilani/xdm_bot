@@ -30,3 +30,7 @@
 - Add greating at 8 oclock
 
 - periodicly backup data on telegram
+
+- show monthly lessons
+
+- show last 10 lessons only on `lessons` command
