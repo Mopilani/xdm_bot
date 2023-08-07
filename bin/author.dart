@@ -393,7 +393,9 @@ class Author {
       '',
       (authorId, command, body) async {
         var file = File('tpm.json');
-        groupsList.add(body[command]);
+        groupsList.addAll({
+          body[command]: false,
+        });
         await file.writeAsString(json.encode(groupsList));
         return 'OK';
       },
@@ -441,21 +443,29 @@ class Author {
             nd.year,
             nd.month,
             nd.day,
-            nd.hour,
-            nd.minute,
-            nd.second,
+            8,
           ).millisecondsSinceEpoch <
           DateTime.now().millisecondsSinceEpoch) {
-        await http.post(
-          Uri.parse('http://localhost:$xport/post'),
-          body: content,
-        );
+        for (var entry in [...groupsList.entries]) {
+          if (!groupsList[entry.key]) {
+            await http.post(
+              Uri.parse('http://localhost:$xport/post'),
+              headers: {'receiver': entry.key},
+              body: content,
+            );
+            groupsList[entry.key] = true;
+          }
+        }
       }
     }
   }
 }
 
-List<String> groupsList = [];
+Map<String, dynamic> groupsList = {
+  // 'gid': ,
+  // 'done': ,
+};
+
 var content = "";
 // var taskList = [
 // {
