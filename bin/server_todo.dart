@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 class ServerTODO {
-  final xport = 8156;
+  static final xport = 8156;
 
-  var running = false;
-  Future<void> tick() async {
+  static var running = false;
+  static Future<void> tick() async {
     running = true;
     while (running) {
       await Future.delayed(Duration(seconds: 30));
@@ -24,12 +24,12 @@ class ServerTODO {
     }
   }
 
-  var tasks = <Task>[];
+  static var tasks = <Task>[];
   // var inNext10Mins = <Task>[];
 
-  final serverDoFilename = 'do.json';
+  static final serverDoFilename = 'do.json';
 
-  var doContent = {};
+  static var doContent = {};
 
   /// Do Content Arch:
   /// { gid :
@@ -47,7 +47,7 @@ class ServerTODO {
   /// }
   ///
 
-  Future<String> editOnce(
+  static Future<String> editOnce(
       String gid, String id, String? time, String? content) async {
     if (doContent[gid] == null) {
       if (time != null) {
@@ -68,7 +68,7 @@ class ServerTODO {
     return 'Success Edited';
   }
 
-  Future<void> addToDo(name, gid, [time, content]) async {
+  Future<String> addToDo(name, gid, [time, content]) async {
     if (doContent[gid] == null) {
       doContent[gid] = {
         // 'name': '',
@@ -88,9 +88,10 @@ class ServerTODO {
 
     var doContentFile = File('todo.json');
     await doContentFile.writeAsString(json.encode(doContent));
+    return 'Added Successfuly';
   }
 
-  Future<void> loadTasks() async {
+  static Future<void> loadTasks() async {
     var doContentFile = File('todo.json');
     doContent = json.decode(await doContentFile.readAsString());
     for (var dryTask in doContent['todoList']) {
@@ -104,16 +105,23 @@ class Task {
     this.time,
     this.content, [
     this.statusCode,
+    this.periodicly,
   ]);
   final DateTime time;
   final String content;
   late int? statusCode;
+  late bool? periodicly;
 
-  static Task fromJson(Map data) =>
-      Task(DateTime.parse(data['time']), data['content'], data['statusCode']);
+  static Task fromJson(Map data) => Task(
+        DateTime.parse(data['time']),
+        data['content'],
+        data['statusCode'],
+        data['periodicly'],
+      );
 
   Map<String, dynamic> asMap() => {
         'time': time.toString(),
         'content': content,
+        'periodicly': periodicly,
       };
 }
