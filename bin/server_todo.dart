@@ -32,7 +32,7 @@ class ServerTODO {
   var doContent = {};
 
   /// Do Content Arch:
-  /// { gid : 
+  /// { gid :
   ///      {
   ///          name : string,
   ///          todoList :
@@ -47,7 +47,28 @@ class ServerTODO {
   /// }
   ///
 
-  Future<void> addToDo(gid, content, time) async {
+  Future<String> editOnce(
+      String gid, String id, String? time, String? content) async {
+    if (doContent[gid] == null) {
+      if (time != null) {
+        doContent[gid]['todoList'][int.parse(id)]['time'] =
+            DateTime.parse(time);
+      }
+      if (content != null) {
+        doContent[gid]['todoList'][int.parse(id)]['time'] =
+            DateTime.parse(content);
+      }
+    } else {
+      return 'No task list with GId $gid found, try add it';
+    }
+    // else { (doContent[gid]['todoList'] as List).add({ 'content': content, 'time': time, }); }
+
+    var doContentFile = File('todo.json');
+    await doContentFile.writeAsString(json.encode(doContent));
+    return 'Success Edited';
+  }
+
+  Future<void> addToDo(name, gid, [time, content]) async {
     if (doContent[gid] == null) {
       doContent[gid] = {
         // 'name': '',
