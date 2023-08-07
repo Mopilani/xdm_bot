@@ -16,6 +16,8 @@ class BotCommand {
 
   static final List<String> adminsList = <String>[
     '249901503116@c.us',
+    '249912773910@c.us',
+    '249128430708@c.us',
   ];
 
   BotCommand(
