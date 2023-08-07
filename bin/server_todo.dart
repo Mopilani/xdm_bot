@@ -103,8 +103,10 @@ class ServerTODO {
   static Future<void> loadTasks() async {
     var doContentFile = File('todo.json');
     doContent = json.decode(await doContentFile.readAsString());
-    for (var dryTask in doContent['todoList']) {
-      tasks.add(Task.fromMap(dryTask));
+    for (var group in doContent.entries) {
+      for (var dryTask in doContent[group.key]['todoList']) {
+        tasks.add(Task.fromMap(dryTask));
+      }
     }
     ServerTODO.tick();
   }
