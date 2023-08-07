@@ -48,15 +48,21 @@ class ServerTODO {
   ///
 
   static Future<String> editOnce(
-      String gid, String id, String? time, String? content) async {
+    String gid,
+    String id,
+    DateTime? time,
+    String? content,
+    bool? periodicly,
+  ) async {
     if (doContent[gid] == null) {
       if (time != null) {
-        doContent[gid]['todoList'][int.parse(id)]['time'] =
-            DateTime.parse(time);
+        doContent[gid]['todoList'][int.parse(id)]['time'] = time;
       }
       if (content != null) {
-        doContent[gid]['todoList'][int.parse(id)]['time'] =
-            DateTime.parse(content);
+        doContent[gid]['todoList'][int.parse(id)]['content'] = content;
+      }
+      if (periodicly != null) {
+        doContent[gid]['todoList'][int.parse(id)]['periodicly'] = periodicly;
       }
     } else {
       return 'No task list with GId $gid found, try add it';
@@ -77,6 +83,7 @@ class ServerTODO {
           {
             'content': content,
             'time': time,
+            'periodicly': false,
           },
         ],
       };
@@ -84,6 +91,7 @@ class ServerTODO {
       (doContent[gid]['todoList'] as List).add({
         'content': content,
         'time': time,
+        'periodicly': false,
       });
     }
 
