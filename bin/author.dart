@@ -388,12 +388,25 @@ class Author {
     ),
     BotCommand(
       'this',
-      'Show all todos',
-      'todos',
+      '',
+      '',
       (authorId, command, body) async {
         var file = File('tpm.json');
         groupsList.add(body[command]);
         await file.writeAsString(json.encode(groupsList));
+        return 'OK';
+      },
+      UserChatState.all,
+      adminCommand: true,
+    ),
+    BotCommand(
+      'loadGroups',
+      '',
+      '',
+      (authorId, command, body) async {
+        var file = File('tpm.json');
+        var r = await file.readAsString();
+        groupsList = json.decode(r);
         return 'OK';
       },
       UserChatState.all,
