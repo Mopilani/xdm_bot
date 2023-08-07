@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'bot_command.dart';
 import 'functions.dart';
 import 'io_functions.dart';
@@ -378,10 +381,33 @@ class Author {
       'Show all todos',
       'todos',
       (authorId, command, body) async {
-       return ServerTODO.tasks.toString();
+        return ServerTODO.tasks.toString();
+      },
+      UserChatState.all,
+      adminCommand: true,
+    ),
+    BotCommand(
+      'this',
+      'Show all todos',
+      'todos',
+      (authorId, command, body) async {
+        var file = File('tpm.json');
+        groupsList.add(body[command]);
+        await file.writeAsString(json.encode(groupsList));
+        return 'OK';
       },
       UserChatState.all,
       adminCommand: true,
     ),
   ];
 }
+
+List<String> groupsList = [];
+
+// var taskList = [
+// {
+//   time: ,
+// }
+// ];
+
+var content = "";
