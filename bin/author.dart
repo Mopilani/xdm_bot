@@ -373,5 +373,15 @@ class Author {
       UserChatState.all,
       adminCommand: true,
     ),
+    BotCommand(
+      'todos',
+      'Show all todos',
+      'todos',
+      (authorId, command, body) async {
+       return ServerTODO.tasks.toString();
+      },
+      UserChatState.all,
+      adminCommand: true,
+    ),
   ];
 }
