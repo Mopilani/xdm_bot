@@ -460,8 +460,8 @@ class Author {
                 nd.year,
                 nd.month,
                 nd.day,
-                8,
-                0,
+                nd.hour,
+                55,
                 0,
               ).millisecondsSinceEpoch <
               nd.millisecondsSinceEpoch) &&
@@ -469,8 +469,8 @@ class Author {
                 nd.year,
                 nd.month,
                 nd.day,
-                8,
-                0,
+                nd.hour,
+                55,
                 30,
               ).millisecondsSinceEpoch >
               nd.millisecondsSinceEpoch) {
