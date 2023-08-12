@@ -35,7 +35,8 @@ class SSHClientBridge {
       var data = utf8.decode(event);
       print(data);
       await callBack(data);
-    }, onError: (e, s) {
+    }, onError: (e, s) async {
+      await callBack(e.toString());
       print(e);
       print(s);
     });
@@ -44,7 +45,8 @@ class SSHClientBridge {
       var data = utf8.decode(event);
       print(data);
       await callBack(data);
-    }, onError: (e, s) {
+    }, onError: (e, s) async {
+      await callBack(e.toString());
       print(e);
       print(s);
     });
