@@ -78,8 +78,9 @@ class SSHClient {
       'Enter ssh command',
       's:Your command',
       (authorId, command, body) async {
-        userChatStates[authorId]!['state'] = UserChatState.sshCommands;
-        return 'OK';
+        var cmd = body[command];
+        clients[authorId]!.sendCommand(cmd);
+        return 'k';
       },
       UserChatState.sshCommands,
       adminCommand: true,
