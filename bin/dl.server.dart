@@ -10,11 +10,12 @@ import 'net_helper/dloader_task.dart';
 
 // https://dl3.downloadly.ir/Files/Elearning/Coursera_Foundations_of_Cybersecurity_2023_5_Downloadly.ir.rar
 void main(List<String> args) async {
+  var sport = args.isNotEmpty ? args[0] : '8186';
   // Configure a pipeline that logs requests.
   final handler = Pipeline().addMiddleware(logRequests()).addHandler(router);
 
   // For running in containers, we respect the PORT environment variable.
-  final port = int.parse(Platform.environment['PORT'] ?? '8186');
+  final port = int.parse(Platform.environment['PORT'] ?? sport);
   final server = await serve(handler, '0.0.0.0', port);
   print('Server listening on port ${server.port}');
 }
@@ -62,7 +63,7 @@ Future<Response> tasks(Request req) async {
 
 Future<Response> add(Request req) async {
   var link = req.headers['link'];
-  if(link == null) {
+  if (link == null) {
     return Response.ok('You must provide a valid link');
   }
   if (clients[link] != null) {
