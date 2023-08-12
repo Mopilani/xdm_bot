@@ -8,7 +8,7 @@ void main(List<String> args) async {
           ''
           // ''
           // ''
-          // ''
+          'https://dl3.downloadly.ir/Files/Elearning/Coursera_Sound_the_Alarm_Detection_and_Response_2023_5_Downloadly.ir.rar'
           // 'https://dl3.downloadly.ir/Files/Elearning/Coursera_Assets_Threats_and_Vulnerabilities_2023_5_Downloadly.ir.rar'
           // 'https://dl3.downloadly.ir/Files/Elearning/Coursera_Tools_of_the_Trade_Linux_and_SQL_2023_5_Downloadly.ir.rar'
           // 'https://dl3.downloadly.ir/Files/Elearning/Coursera_Connect_and_Protect_Networks_and_Network_Security_2023_5_Downloadly.ir.rar'
