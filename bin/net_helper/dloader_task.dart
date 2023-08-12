@@ -36,6 +36,8 @@ class DloaderTask {
     var req = await client.getUrl(Uri.parse(link));
 
     res = await req.close();
+    print('Headers: ${res.headers} :Heders');
+
     var raf = await file.open(mode: FileMode.writeOnly);
 
     timer();
