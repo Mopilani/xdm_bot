@@ -37,6 +37,11 @@ class DloaderTask {
 
     res = await req.close();
     print('Headers: ${res.headers} :Heders');
+    
+    if(res.statusCode == 503) {
+      // put in the queue
+    }
+    
     if(res.headers['content-length'] != null) {
       size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
     }
