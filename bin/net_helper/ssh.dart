@@ -74,6 +74,17 @@ class SSHClient {
       adminCommand: true,
     ),
     BotCommand(
+      's',
+      'Enter ssh command',
+      's:Your command',
+      (authorId, command, body) async {
+        userChatStates[authorId]!['state'] = UserChatState.sshCommands;
+        return 'OK';
+      },
+      UserChatState.sshCommands,
+      adminCommand: true,
+    ),
+    BotCommand(
       'set',
       'Set your ssh client host',
       'set:a6a2a3b4b2b5.c023c54eb.alx-cod.online',
