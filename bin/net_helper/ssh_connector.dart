@@ -13,9 +13,8 @@ class SSHClientBridge {
 
   late Process sshProcess;
 
-  Future<void> startWith() async {
+  Future<void> start() async {
     sshProcess = await Process.start('ssh', [host]);
-    // return sshProcess;
   }
 
   void sendCommand(command) {
