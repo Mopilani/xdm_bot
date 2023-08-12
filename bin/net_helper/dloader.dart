@@ -107,16 +107,16 @@ class Dloader {
       UserChatState.all,
       adminCommand: true,
     ),
-    // BotCommand(
-    //   'set',
-    //   'Set your server client host',
-    //   '',
-    //   (authorId, command, body) async {
-    //     var sshHots = body[command];
-    //     return 'OK';
-    //   },
-    //   UserChatState.all,
-    //   adminCommand: true,
-    // ),
+    BotCommand(
+      'set',
+      'Set your server host',
+      serverUrl,
+      (authorId, command, body) async {
+        serverUrl = body[command];
+        return 'OK';
+      },
+      UserChatState.all,
+      adminCommand: true,
+    ),
   ];
 }
