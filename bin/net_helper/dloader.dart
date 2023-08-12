@@ -20,7 +20,7 @@ class Dloader {
 
   static var serverUrl = 'https://localhost:8186/';
 
-  static http.Client client = http.Client();
+  // static http.Client client = http.Client();
 
   // static Map<String, DloaderTask> clients = {};
 
@@ -56,7 +56,7 @@ class Dloader {
       'add:https://link_here.com/example',
       (authorId, command, body) async {
         var link = body[command];
-        var res = await client.get(
+        var res = await http.get(
           Uri.parse('$serverUrl/cancel'),
           headers: {'link': link},
         );
@@ -70,7 +70,7 @@ class Dloader {
       'List server tasks queue',
       'tasks',
       (authorId, command, body) async {
-        var res = await client.get(
+        var res = await http.get(
           Uri.parse('$serverUrl/tasks'),
         );
         return res.body;
@@ -84,7 +84,7 @@ class Dloader {
       'add:https://link_here.com/example',
       (authorId, command, body) async {
         var link = body[command];
-        var res = await client.post(
+        var res = await http.post(
           Uri.parse('$serverUrl/add'),
           body: json.encode({'link': link}),
         );
@@ -99,7 +99,7 @@ class Dloader {
       'status:https://link_here.com/example',
       (authorId, command, body) async {
         var link = body[command];
-        var res = await client.get(
+        var res = await http.get(
           Uri.parse('$serverUrl/tasks'),
           headers: {'link': link},
         );
