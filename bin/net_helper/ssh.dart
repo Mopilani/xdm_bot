@@ -80,10 +80,10 @@ class SSHClient {
       (authorId, command, body) async {
         var sshHots = body[command];
         var client = SSHClientBridge(sshHots);
-        client.bind(client.whatsClientCallBack(authorId));
-        clients.addAll({authorId: client});
         try {
           await client.start();
+          client.bind(client.whatsClientCallBack(authorId));
+          clients.addAll({authorId: client});
           return 'OK';
         } catch (e) {
           return 'Err: $e';
