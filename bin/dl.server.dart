@@ -52,8 +52,9 @@ Future<Response> status(Request req) async {
 
 Future<Response> tasks(Request req) async {
   var tasksList = 'Tasks: \n';
-  for (var entry in clients.entries) {
-    tasksList += '${entry.key},';
+  for (int i = 0; i < clients.entries.length; i++) {
+    var entry = clients.entries.toList()[i];
+    tasksList += '$i: ${entry.key},';
   }
   return Response.ok(tasksList);
 }
