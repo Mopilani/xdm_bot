@@ -30,7 +30,7 @@ final router = Router()
   ..get('/resume', (_) {})
   ..get('/status', status)
   ..get('/tasks', tasks)
-  ..get('/lesson/<lessonName>', (_) {});
+  ..get('/k/<v>', (_) {});
 
 Future<Response> cancel(Request req) async {
   var link = req.headers['link'];
