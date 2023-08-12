@@ -16,21 +16,24 @@ void main(List<String> args) async {
   var sink = file.openWrite();
 
   var count = 0;
+  var stoptimer = false;
 
   timer() {
     Future.delayed(Duration(seconds: 2), () {
       print(count);
-      timer();
+      if (!stoptimer) {
+        timer();
+      }
     });
   }
 
   timer();
-  
+
   res.listen((event) {
     count += event.length;
     sink.write(event);
   }, onDone: () {
-    timer.cancel();
+    stoptimer = true;
     print('Done successfuly');
   }, onError: (e, s) {
     print(e);
