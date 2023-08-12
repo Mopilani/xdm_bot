@@ -100,7 +100,7 @@ class Dloader {
     BotCommand(
       'setdl',
       'Set your server host',
-      'setdl:${serverUrl}',
+      'setdl:$serverUrl',
       (authorId, command, body) async {
         serverUrl = body[command];
         return 'OK';
