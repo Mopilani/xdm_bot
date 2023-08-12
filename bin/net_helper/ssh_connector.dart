@@ -37,7 +37,7 @@ class SSHClientBridge {
       await callBack(data);
     }, onError: (e, s) async {
       await callBack(e.toString());
-      print(e);
+      print('stderr: $e');
       print(s);
     });
 
@@ -47,7 +47,7 @@ class SSHClientBridge {
       await callBack(data);
     }, onError: (e, s) async {
       await callBack(e.toString());
-      print(e);
+      print('err: $e');
       print(s);
     });
   }
