@@ -28,27 +28,6 @@ class Dloader {
       };
 
   static final List<BotCommand> commands = [
-    // BotCommand(
-    //   'exit',
-    //   'Set your ssh client',
-    //   '',
-    //   (authorId, command, body) async {
-    //     userChatStates[authorId]!['state'] = UserChatState.normalMode;
-    //     return 'Exited mode';
-    //   },
-    //   UserChatState.sshCommands,
-    //   adminCommand: true,
-    // ),
-    // BotCommand(
-    //   'stop',
-    //   'Set your ssh client',
-    //   '',
-    //   (authorId, command, body) async {
-    //     return 'Exited (0)';
-    //   },
-    //   UserChatState.sshCommands,
-    //   adminCommand: true,
-    // ),
     BotCommand(
       'cancel',
       'List server tasks queue',
@@ -71,6 +50,19 @@ class Dloader {
       (authorId, command, body) async {
         var res = await http.get(
           Uri.parse('${serverUrl}tasks'),
+        );
+        return res.body;
+      },
+      UserChatState.all,
+      adminCommand: true,
+    ),
+    BotCommand(
+      'queue',
+      'List server tasks queue',
+      'tasks',
+      (authorId, command, body) async {
+        var res = await http.get(
+          Uri.parse('${serverUrl}queue'),
         );
         return res.body;
       },
