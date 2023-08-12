@@ -15,8 +15,9 @@ void main(List<String> args) async {
   var req = await client.getUrl(Uri.parse(link));
 
   var res = await req.close();
-  var sink = file.openWrite(
-    encoding: ascii,
+  var sink = await file.open(
+    mode: FileMode.writeOnly,
+    // encoding: latin1,
   );
 
   var count = 0;
@@ -33,9 +34,10 @@ void main(List<String> args) async {
 
   timer();
 
-  res.listen((event) {
+  res.listen((event) async {
     count += event.length;
-    sink.write(event);
+    sink.writeFromSync(event);
+    // sink.write(event);
   }, onDone: () {
     stoptimer = true;
     print('Done successfuly');
