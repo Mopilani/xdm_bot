@@ -57,7 +57,7 @@ class Dloader {
       (authorId, command, body) async {
         var link = body[command];
         var res = await http.get(
-          Uri.parse('$serverUrl/cancel'),
+          Uri.parse('${serverUrl}cancel'),
           headers: {'link': link},
         );
         return res.body;
@@ -71,7 +71,7 @@ class Dloader {
       'tasks',
       (authorId, command, body) async {
         var res = await http.get(
-          Uri.parse('$serverUrl/tasks'),
+          Uri.parse('${serverUrl}tasks'),
         );
         return res.body;
       },
@@ -85,7 +85,7 @@ class Dloader {
       (authorId, command, body) async {
         var link = body[command];
         var res = await http.post(
-          Uri.parse('$serverUrl/add'),
+          Uri.parse('${serverUrl}add'),
           body: json.encode({'link': link}),
         );
         return res.body;
@@ -100,7 +100,7 @@ class Dloader {
       (authorId, command, body) async {
         var link = body[command];
         var res = await http.get(
-          Uri.parse('$serverUrl/tasks'),
+          Uri.parse('${serverUrl}tasks'),
           headers: {'link': link},
         );
         return res.body;
