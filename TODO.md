@@ -27,10 +27,18 @@
 
 - use mongo db
 
-- Add greating at 8 oclock
+- Add greating at 8 oclock - DONE
 
 - periodicly backup data on telegram
 
 - show monthly lessons
 
 - show last 10 lessons only on `lessons` command
+
+- force redownload
+
+- remove from list
+
+- the program caches alot of data
+
+- make queue
