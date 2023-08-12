@@ -15,7 +15,7 @@ class DloaderTask {
   var stoptimer = false;
 
   void timer() {
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 10), () {
       print(status());
       if (!stoptimer) {
         timer();
