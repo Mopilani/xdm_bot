@@ -28,7 +28,9 @@ class SSHClientBridge {
 
   void bind(FutureOr<void> Function(String) callBack) {
     sshProcess.stdout.listen((event) async {
-      await callBack(utf8.decode(event));
+      var data = utf8.decode(event);
+      print(data);
+      await callBack(data);
     });
   }
 
