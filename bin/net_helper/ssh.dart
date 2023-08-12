@@ -22,12 +22,12 @@ class SSHClient {
 
   static final List<BotCommand> commands = [
     BotCommand(
-      'stop',
+      'exit',
       'Set your ssh client',
       'ssh:a6a2a3b4b2b5.c02c427b.alx-cod.online',
       (authorId, command, body) async {
         userChatStates[authorId]!['state'] = UserChatState.normalMode;
-        return 'Exited';
+        return 'Exited mode';
       },
       UserChatState.sshCommands,
       adminCommand: true,
