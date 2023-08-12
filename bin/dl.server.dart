@@ -62,6 +62,9 @@ Future<Response> tasks(Request req) async {
 Future<Response> add(Request req) async {
   var body = utf8.decode(await req.read().first);
   var link = json.decode(body)['link'];
+  if(clients[link] != null) {
+    return Response.ok('Link was exits');
+  }
   var task = DloaderTask(link);
   await task.start();
   clients.addAll({link: task});
