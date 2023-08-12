@@ -57,7 +57,7 @@ class Dloader {
     BotCommand(
       'queue',
       'List server tasks queue',
-      'tasks',
+      'queue',
       (authorId, command, body) async {
         var res = await http.get(
           Uri.parse('${serverUrl}queue'),
