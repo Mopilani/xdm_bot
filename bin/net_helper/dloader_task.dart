@@ -1,69 +1,66 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-
-import 'package:http/http.dart' as http;
-
-import '../author.dart';
 
 class DloaderTask {
   String link;
 
   DloaderTask(this.link);
 
-  late Process sshProcess;
+  late HttpClientResponse res;
+  late StreamSubscription sub;
+
+  var downloaded = 0;
+  var size = 0;
+
+  var stoptimer = false;
+
+  void timer() {
+    Future.delayed(Duration(seconds: 2), () {
+      print(status());
+      if (!stoptimer) {
+        timer();
+      }
+    });
+  }
+
+  String status() {
+    return 'Downloaded: $downloaded - $size';
+  }
 
   Future<void> start() async {
-    sshProcess = await Process.start(
-      'curl',
-      [link],
-      runInShell: false,
+    var fileName = link.split('/').last;
+
+    var file = File(fileName);
+
+    var client = HttpClient();
+    var req = await client.getUrl(Uri.parse(link));
+
+    res = await req.close();
+    var raf = await file.open(mode: FileMode.writeOnly);
+
+    timer();
+
+    void onDone() {
+      stoptimer = true;
+      print('Done successfuly');
+    }
+
+    void onError(e, s) {
+      print(e);
+      print(s);
+    }
+
+    void onData(List<int> event) async {
+      downloaded += event.length;
+      raf.writeFromSync(event);
+    }
+
+    sub = res.listen(
+      onData,
+      onDone: onDone,
+      onError: onError,
     );
   }
 
-  void stop() async {
-    // http.get();
-
-    sshProcess.stdin.writeln('exit');
-    sshProcess.kill();
-  }
-
-  void sendCommand(command) {
-    sshProcess.stdin.writeln(command);
-  }
-
-  void bind(FutureOr<void> Function(String) callBack) {
-    sshProcess.stdout.listen((event) async {
-      var data = utf8.decode(event);
-      print(data);
-      await callBack(data);
-    }, onError: (e, s) async {
-      await callBack(e.toString());
-      print('stderr: $e');
-      print(s);
-    });
-
-    sshProcess.stderr.listen((event) async {
-      var data = utf8.decode(event);
-      print(data);
-      await callBack(data);
-    }, onError: (e, s) async {
-      await callBack(e.toString());
-      print('err: $e');
-      print(s);
-    });
-  }
-
-  Future Function(String) whatsClientCallBack(String receiver) {
-    return (event) async {
-      await http.post(
-        Uri.parse('http://localhost:$xport/ssh'),
-        headers: {
-          'receiver': receiver,
-          HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
-        },
-        body: json.encode(event),
-      );
-    };
-  }
+  void cancel() async => await sub.cancel();
 }
