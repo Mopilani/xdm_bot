@@ -85,7 +85,7 @@ class Dloader {
         var link = body[command];
         var res = await http.post(
           Uri.parse('${serverUrl}add'),
-          body: json.encode({'link': link}),
+          headers: {'link': link},
         );
         return res.body;
       },
