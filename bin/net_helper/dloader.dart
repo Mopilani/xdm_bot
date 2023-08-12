@@ -99,7 +99,7 @@ class Dloader {
       (authorId, command, body) async {
         var link = body[command];
         var res = await http.get(
-          Uri.parse('${serverUrl}tasks'),
+          Uri.parse('${serverUrl}status'),
           headers: {'link': link},
         );
         return res.body;
