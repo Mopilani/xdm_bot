@@ -17,10 +17,15 @@ void main(List<String> args) async {
 
   var count = 0;
 
-  var timer = Timer(Duration(seconds: 2), () {
-    print(count);
-  });
+  timer() {
+    Future.delayed(Duration(seconds: 2), () {
+      print(count);
+      timer();
+    });
+  }
 
+  timer();
+  
   res.listen((event) {
     count += event.length;
     sink.write(event);
