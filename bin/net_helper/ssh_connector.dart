@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:js_interop';
+
+import 'package:http/http.dart' as http;
+
+import '../author.dart';
 
 class SSHClientBridge {
   String host;
@@ -25,9 +28,16 @@ class SSHClientBridge {
     });
   }
 
-  whatsClientCallBack() {
-    return (event) {
-      
+  Future Function(String) whatsClientCallBack(String receiver) {
+    return (event) async {
+      await http.post(
+          Uri.parse('http://localhost:$xport/ssh'),
+          headers: {
+            'receiver': receiver,
+            HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
+          },
+          body: json.encode(event),
+        );
     };
   }
 }
