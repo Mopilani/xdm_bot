@@ -6,6 +6,7 @@ import 'faq.dart';
 import 'functions.dart';
 import 'io_functions.dart';
 import 'lesson.dart';
+import 'net_helper/dloader.dart';
 import 'net_helper/ssh.dart';
 
 class BotCommand {
@@ -97,6 +98,9 @@ class BotCommand {
       commandsMap.addAll({command.command: command});
     }
     for (var command in SSHClient.commands) {
+      commandsMap.addAll({command.command: command});
+    }
+    for (var command in Dloader.commands) {
       commandsMap.addAll({command.command: command});
     }
   }
