@@ -30,7 +30,7 @@ class DloaderTask {
   Future<void> start() async {
     var fileName = link.split('/').last;
 
-    var file = File(fileName);
+    var file = File('downloads/$fileName');
 
     var client = HttpClient();
     var req = await client.getUrl(Uri.parse(link));
