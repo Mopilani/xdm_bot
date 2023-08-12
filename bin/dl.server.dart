@@ -33,7 +33,7 @@ final router = Router()
 
 Future<Response> cancel(Request req) async {
   var link = req.headers['link'];
-  if (clients[link] == null) {
+  if (clients[link] != null) {
     clients[link]!.cancel();
     return Response.ok('OK');
   } else {
@@ -43,7 +43,7 @@ Future<Response> cancel(Request req) async {
 
 Future<Response> status(Request req) async {
   var link = req.headers['link'];
-  if (clients[link] == null) {
+  if (clients[link] != null) {
     return Response.ok(clients[link]!.status());
   } else {
     return Response.ok('Link not found in the queue');
