@@ -62,7 +62,7 @@ class Dloader {
         );
         return res.body;
       },
-      UserChatState.sshCommands,
+      UserChatState.all,
       adminCommand: true,
     ),
     BotCommand(
@@ -75,7 +75,7 @@ class Dloader {
         );
         return res.body;
       },
-      UserChatState.sshCommands,
+      UserChatState.all,
       adminCommand: true,
     ),
     BotCommand(
