@@ -17,21 +17,18 @@ void main(List<String> args) async {
 
   var count = 0;
 
-  Timer(Duration(seconds: 2), () { 
+  var timer = Timer(Duration(seconds: 2), () {
     print(count);
   });
 
-  res.listen(
-    (event) {
-      count += event.length;
-      sink.write(event);
-    },
-    onDone: () {
-      print('Done successfuly');
-    },
-    onError: (e, s) {
-      print(e);
-      print(s);
-    }
-  );
+  res.listen((event) {
+    count += event.length;
+    sink.write(event);
+  }, onDone: () {
+    timer.cancel();
+    print('Done successfuly');
+  }, onError: (e, s) {
+    print(e);
+    print(s);
+  });
 }
