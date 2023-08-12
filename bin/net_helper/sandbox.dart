@@ -14,9 +14,7 @@ class Sandbox {
 
   static Map<String, SandboxBridge> clients = {};
 
-  Map<String, dynamic> asMap() => {
-        'id': id,
-      };
+  Map<String, dynamic> asMap() => {'id': id};
 
   static final List<BotCommand> commands = [
     BotCommand(
