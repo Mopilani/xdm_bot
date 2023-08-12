@@ -11,6 +11,9 @@ class DloaderTask {
 
   var downloaded = 0;
   var size = 0;
+  // var done = false;
+  var started = false;
+  DateTime tryAt = DateTime.now();
 
   var stoptimer = false;
 
@@ -37,12 +40,15 @@ class DloaderTask {
 
     res = await req.close();
     print('Headers: ${res.headers} :Heders');
-    
-    if(res.statusCode == 503) {
+
+    if (res.statusCode == 503) {
       // put in the queue
+      tryAt = tryAfter(hours: 1);
     }
-    
-    if(res.headers['content-length'] != null) {
+
+    started = true;
+
+    if (res.headers['content-length'] != null) {
       size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
     }
 
@@ -69,6 +75,21 @@ class DloaderTask {
       onData,
       onDone: onDone,
       onError: onError,
+    );
+  }
+
+  DateTime tryAfter({
+    int? hours,
+    int? minutes,
+    int? seconds,
+  }) {
+    return DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      hours ?? DateTime.now().hour,
+      minutes ?? DateTime.now().minute,
+      seconds ?? DateTime.now().second,
     );
   }
 
