@@ -10,6 +10,7 @@ enum UserChatState {
   lessonCommands,
   faqCommands,
   normalMode,
+  sshCommands,
   all,
 }
 
