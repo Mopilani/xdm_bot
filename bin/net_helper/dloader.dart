@@ -18,7 +18,7 @@ class Dloader {
     );
   }
 
-  static var serverUrl = 'https://localhost:8186/';
+  static var serverUrl = 'http://localhost:8186/';
 
   // static http.Client client = http.Client();
 
