@@ -4,9 +4,7 @@ import 'sandbox_bridge.dart';
 
 class Sandbox {
   String? id;
-  Sandbox(
-    this.id,
-  );
+  Sandbox(this.id);
 
   static Sandbox fromMap(Map<String, dynamic> data) {
     return Sandbox(
