@@ -14,9 +14,13 @@ class SSHClientBridge {
   late Process sshProcess;
 
   Future<void> start() async {
-    sshProcess = await Process.start('ssh', [host]);
+    sshProcess = await Process.start(
+      'ssh',
+      [host],
+      runInShell: true,
+    );
   }
-  
+
   void stop() async {
     sshProcess.stdin.writeln('exit');
     sshProcess.kill();
@@ -37,13 +41,13 @@ class SSHClientBridge {
   Future Function(String) whatsClientCallBack(String receiver) {
     return (event) async {
       await http.post(
-          Uri.parse('http://localhost:$xport/ssh'),
-          headers: {
-            'receiver': receiver,
-            HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
-          },
-          body: json.encode(event),
-        );
+        Uri.parse('http://localhost:$xport/ssh'),
+        headers: {
+          'receiver': receiver,
+          HttpHeaders.contentTypeHeader: ContentType.json.mimeType,
+        },
+        body: json.encode(event),
+      );
     };
   }
 }
