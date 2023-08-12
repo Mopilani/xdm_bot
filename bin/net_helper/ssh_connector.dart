@@ -16,6 +16,11 @@ class SSHClientBridge {
   Future<void> start() async {
     sshProcess = await Process.start('ssh', [host]);
   }
+  
+  void stop() async {
+    sshProcess.stdin.writeln('exit');
+    sshProcess.kill();
+  }
 
   void sendCommand(command) {
     sshProcess.stdin.write(command);
