@@ -51,11 +51,28 @@ class Dloader {
     //   adminCommand: true,
     // ),
     BotCommand(
+      'cancel',
+      'List server tasks queue',
+      'add:https://link_here.com/example',
+      (authorId, command, body) async {
+        var link = body[command];
+        var res = await client.get(
+          Uri.parse('$serverUrl/cancel'),
+          headers: {'link': link},
+        );
+        return res.body;
+      },
+      UserChatState.sshCommands,
+      adminCommand: true,
+    ),
+    BotCommand(
       'tasks',
       'List server tasks queue',
       'tasks',
       (authorId, command, body) async {
-        var res = await client.get(Uri.parse('$serverUrl/tasks'));
+        var res = await client.get(
+          Uri.parse('$serverUrl/tasks'),
+        );
         return res.body;
       },
       UserChatState.sshCommands,
