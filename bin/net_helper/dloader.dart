@@ -29,27 +29,27 @@ class Dloader {
       };
 
   static final List<BotCommand> commands = [
-    BotCommand(
-      'exit',
-      'Set your ssh client',
-      '',
-      (authorId, command, body) async {
-        userChatStates[authorId]!['state'] = UserChatState.normalMode;
-        return 'Exited mode';
-      },
-      UserChatState.sshCommands,
-      adminCommand: true,
-    ),
-    BotCommand(
-      'stop',
-      'Set your ssh client',
-      '',
-      (authorId, command, body) async {
-        return 'Exited (0)';
-      },
-      UserChatState.sshCommands,
-      adminCommand: true,
-    ),
+    // BotCommand(
+    //   'exit',
+    //   'Set your ssh client',
+    //   '',
+    //   (authorId, command, body) async {
+    //     userChatStates[authorId]!['state'] = UserChatState.normalMode;
+    //     return 'Exited mode';
+    //   },
+    //   UserChatState.sshCommands,
+    //   adminCommand: true,
+    // ),
+    // BotCommand(
+    //   'stop',
+    //   'Set your ssh client',
+    //   '',
+    //   (authorId, command, body) async {
+    //     return 'Exited (0)';
+    //   },
+    //   UserChatState.sshCommands,
+    //   adminCommand: true,
+    // ),
     BotCommand(
       'tasks',
       'List server tasks queue',
@@ -91,16 +91,16 @@ class Dloader {
       UserChatState.all,
       adminCommand: true,
     ),
-    BotCommand(
-      'set',
-      'Set your server client host',
-      '',
-      (authorId, command, body) async {
-        var sshHots = body[command];
-        return 'OK';
-      },
-      UserChatState.all,
-      adminCommand: true,
-    ),
+    // BotCommand(
+    //   'set',
+    //   'Set your server client host',
+    //   '',
+    //   (authorId, command, body) async {
+    //     var sshHots = body[command];
+    //     return 'OK';
+    //   },
+    //   UserChatState.all,
+    //   adminCommand: true,
+    // ),
   ];
 }
