@@ -18,7 +18,7 @@ class Dloader {
     );
   }
 
-  static var serverUrl = Uri.parse('localhost:8186');
+  static var serverUrl = 'https://localhost:8186/';
 
   static http.Client client = http.Client();
 
@@ -55,7 +55,7 @@ class Dloader {
       'List server tasks queue',
       'tasks',
       (authorId, command, body) async {
-        var res = await client.get(serverUrl);
+        var res = await client.get(Uri.parse('$serverUrl/tasks'));
         return res.body;
       },
       UserChatState.sshCommands,
@@ -68,7 +68,7 @@ class Dloader {
       (authorId, command, body) async {
         var link = body[command];
         var res = await client.post(
-          serverUrl,
+          Uri.parse('$serverUrl/add'),
           body: json.encode({'link': link}),
         );
         return res.body;
@@ -82,7 +82,10 @@ class Dloader {
       'status:https://link_here.com/example',
       (authorId, command, body) async {
         var link = body[command];
-        var res = await client.get(serverUrl, headers: {'link': link});
+        var res = await client.get(
+          Uri.parse('$serverUrl/tasks'),
+          headers: {'link': link},
+        );
         return res.body;
       },
       UserChatState.all,
