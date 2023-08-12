@@ -23,6 +23,7 @@ Map<String, DloaderTask> clients = {};
 
 final router = Router()
   ..post('/add', add)
+  ..post('/redown', (req) => add(req, true))
   ..get('/cancel', cancel)
   ..get('/remove', (_) {})
   ..get('/stop', (_) {})
@@ -60,12 +61,12 @@ Future<Response> tasks(Request req) async {
   return Response.ok(tasksList);
 }
 
-Future<Response> add(Request req) async {
+Future<Response> add(Request req, [bool redown = false]) async {
   var link = req.headers['link'];
   if (link == null) {
     return Response.ok('You must provide a valid link');
   }
-  if (clients[link] != null) {
+  if (clients[link] != null && !redown) {
     return Response.ok('Link was exits');
   }
   var task = DloaderTask(link);
