@@ -23,7 +23,7 @@ class SSHClientBridge {
   }
 
   void sendCommand(command) {
-    sshProcess.stdin.write(command);
+    sshProcess.stdin.writeln(command);
   }
 
   void bind(FutureOr<void> Function(String) callBack) {
