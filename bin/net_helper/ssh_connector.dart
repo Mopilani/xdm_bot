@@ -35,6 +35,17 @@ class SSHClientBridge {
       var data = utf8.decode(event);
       print(data);
       await callBack(data);
+    }, onError: (e, s) {
+      print(e);
+      print(s);
+    });
+
+    sshProcess.stderr.listen((event) async {
+      var data = utf8.decode(event);
+      print(data);
+    }, onError: (e, s) {
+      print(e);
+      print(s);
     });
   }
 
