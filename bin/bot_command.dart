@@ -6,6 +6,7 @@ import 'faq.dart';
 import 'functions.dart';
 import 'io_functions.dart';
 import 'lesson.dart';
+import 'net_helper/ssh.dart';
 
 class BotCommand {
   final String command, descripton, usage;
@@ -93,6 +94,9 @@ class BotCommand {
       commandsMap.addAll({command.command: command});
     }
     for (var command in FAQ.commands) {
+      commandsMap.addAll({command.command: command});
+    }
+    for (var command in SSHClient.commands) {
       commandsMap.addAll({command.command: command});
     }
   }
