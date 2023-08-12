@@ -17,7 +17,7 @@ class SSHClientBridge {
     sshProcess = await Process.start(
       'ssh',
       [host],
-      runInShell: true,
+      runInShell: false,
     );
   }
 
