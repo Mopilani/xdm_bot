@@ -54,15 +54,17 @@ Future<Response> tasks(Request req) async {
   var tasksList = 'Tasks: \n';
   for (int i = 0; i < clients.entries.length; i++) {
     var entry = clients.entries.toList()[i];
-    tasksList += '$i: ${entry.key}\n' 
-    '${entry.value.downloaded} - ${entry.value.size},\n';
+    tasksList += '$i: ${entry.key}\n'
+        '${entry.value.downloaded} - ${entry.value.size},\n';
   }
   return Response.ok(tasksList);
 }
 
 Future<Response> add(Request req) async {
-  var body = utf8.decode(await req.read().first);
-  var link = json.decode(body)['link'];
+  var link = req.headers['link'];
+  if(link == null) {
+    return Response.ok('You must provide a valid link');
+  }
   if (clients[link] != null) {
     return Response.ok('Link was exits');
   }
