@@ -17,6 +17,28 @@ void main(List<String> args) async {
   final port = int.parse(Platform.environment['PORT'] ?? sport);
   final server = await serve(handler, '0.0.0.0', port);
   print('Server listening on port ${server.port}');
+
+  Future.delayed(Duration(seconds: 5), () {
+    tick();
+  });
+}
+
+var running = false;
+
+Future<void> tick() async {
+  running = true;
+  while (running) {
+    print('TICK-X');
+    await Future.delayed(Duration(minutes: 10));
+    print("IT'S TIME-X");
+    for (var entry in [...clients.entries]) {
+      print("POP-X");
+      if (!entry.value.started) {
+        print("PIP-X");
+        await clients[entry.key]!.start();
+      }
+    }
+  }
 }
 
 Map<String, DloaderTask> clients = {};

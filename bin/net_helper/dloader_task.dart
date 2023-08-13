@@ -13,7 +13,7 @@ class DloaderTask {
   var size = 0;
   // var done = false;
   var started = false;
-  DateTime tryAt = DateTime.now();
+  DateTime tryAfter = DateTime.now();
 
   var stoptimer = false;
 
@@ -43,7 +43,7 @@ class DloaderTask {
 
     if (res.statusCode == 503) {
       // put in the queue
-      tryAt = tryAfter(hours: 1);
+      tryAfter = tryAt(hours: 1);
     }
 
     started = true;
@@ -78,7 +78,7 @@ class DloaderTask {
     );
   }
 
-  DateTime tryAfter({
+  DateTime tryAt({
     int? hours,
     int? minutes,
     int? seconds,
