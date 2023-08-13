@@ -90,6 +90,9 @@ void main(List<String> args) async {
   var file = File('tpm.json');
   var r = await file.readAsString();
   groupsList = json.decode(r);
+  file = File('tpmx.json');
+  r = await file.readAsString();
+  BotCommand.adminsList.addAll(json.decode(r));
   Author.tick();
   BotCommand.loadCommands();
 
