@@ -28,6 +28,24 @@ class Dloader {
 
   static final List<BotCommand> commands = [
     BotCommand(
+      'shutdown',
+      'Shutdown the server',
+      'shutdown',
+      (authorId, command, body) async {
+        var link = body[command];
+        var serverUrl = peers[authorId];
+        if (serverUrl == null) {
+          return 'Your server url not setted yet';
+        }
+        var res = await http.get(
+          Uri.parse('${serverUrl}shutdown'),
+          headers: {'link': link},
+        );
+        return res.body;
+      },
+      UserChatState.all,
+    ),
+    BotCommand(
       'cancel',
       'List server tasks queue',
       'add:https://link_here.com/example',
