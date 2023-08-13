@@ -61,16 +61,16 @@ final router = Router()
   ..get('/shutdown', shutdown)
   ..get('/k/<v>', (_) {});
 
-Future<Response> resume(Request req, [bool redown = false]) async {
+Future<Response> resume(Request req, [bool b = false]) async {
   var link = req.headers['link'];
   if (link == null) {
     return Response.ok('You must provide a valid link');
   }
-  if (clients[link] != null && !redown) {
-    return Response.ok('Link was exits');
+  if (clients[link] == null) {
+    return Response.ok('Link not exits');
   }
-  var task = DloaderTask(link);
-  await task.start();
+  var task = clients[link]!;
+  await task.resume();
   clients.addAll({link: task});
   return Response.ok('OK');
 }
