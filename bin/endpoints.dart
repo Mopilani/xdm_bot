@@ -23,11 +23,17 @@ final router = Router()
   ..get('/all-lessons', allLessons)
   ..get('/month-lessons', monthLessons)
   ..get('/log', getLog)
+  ..get('/rev', getSite)
   ..get('/faq/<about>', faqEndpoint)
   ..get('/lesson/<lessonName>', getLesson);
 
 // DONE
 Response getLog(Request req) {
+  return Response.ok(Log().readAsJson());
+}
+
+Response getSite(Request req) {
+  // http
   return Response.ok(Log().readAsJson());
 }
 
