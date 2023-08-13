@@ -55,19 +55,6 @@ class Dloader {
       adminCommand: true,
     ),
     BotCommand(
-      'queue',
-      'List server tasks queue',
-      'queue',
-      (authorId, command, body) async {
-        var res = await http.get(
-          Uri.parse('${serverUrl}queue'),
-        );
-        return res.body;
-      },
-      UserChatState.all,
-      adminCommand: true,
-    ),
-    BotCommand(
       'add',
       'Add task to the tasks queue',
       'add:https://link_here.com/example',
