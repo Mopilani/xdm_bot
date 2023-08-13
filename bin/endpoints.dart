@@ -1,4 +1,3 @@
-
 // Configure routes.
 import 'dart:convert';
 
@@ -12,6 +11,8 @@ import 'functions.dart';
 import 'io_functions.dart';
 import 'lesson.dart';
 import 'log.dart';
+
+import 'package:http/http.dart' as http;
 
 final router = Router()
   ..get('/greating', greating)
@@ -32,9 +33,19 @@ Response getLog(Request req) {
   return Response.ok(Log().readAsJson());
 }
 
-Response getSite(Request req) {
-  // http
-  return Response.ok(Log().readAsJson());
+Future<Response> getSite(Request req) async {
+  try {
+    var r = await http.get(Uri.parse(req.headers['link']!));
+    return Response(
+      r.statusCode,
+      body: r.body,
+      headers: r.headers,
+    );
+  } catch (e, s) {
+    print(e);
+    print(s);
+    return Response.internalServerError(body: 'FATAL ERROR: $e');
+  }
 }
 
 Response greating(Request req) {
@@ -48,7 +59,8 @@ Response _author(Request req) {
   if (author != null) {
     return Response.ok(author.show());
   }
-  return Response.notFound('نتأسف لا يوجد لدينا ما يطابق سؤالك, يمكنك تجربة البحث على Google او المحاولة مرة اخرى');
+  return Response.notFound(
+      'نتأسف لا يوجد لدينا ما يطابق سؤالك, يمكنك تجربة البحث على Google او المحاولة مرة اخرى');
 }
 
 // DONE
@@ -79,7 +91,8 @@ Response getLesson(Request req) {
       return Response.ok(lesson.show());
     }
   }
-  return Response.notFound('نتأسف لا يوجد لدينا ما يطابق سؤالك, يمكنك تجربة البحث على Google او المحاولة مرة اخرى');
+  return Response.notFound(
+      'نتأسف لا يوجد لدينا ما يطابق سؤالك, يمكنك تجربة البحث على Google او المحاولة مرة اخرى');
 }
 
 Response faqEndpoint(Request req) {
