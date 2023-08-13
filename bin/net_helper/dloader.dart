@@ -36,6 +36,10 @@ class Dloader {
       'add:https://link_here.com/example',
       (authorId, command, body) async {
         var link = body[command];
+        var serverUrl = peers[authorId];
+        if (serverUrl == null) {
+          return 'Your server url not setted yet';
+        }
         var res = await http.get(
           Uri.parse('${serverUrl}cancel'),
           headers: {'link': link},
@@ -43,20 +47,22 @@ class Dloader {
         return res.body;
       },
       UserChatState.all,
-      adminCommand: true,
     ),
     BotCommand(
       'tasks',
       'List server tasks queue',
       'tasks',
       (authorId, command, body) async {
+        var serverUrl = peers[authorId];
+        if (serverUrl == null) {
+          return 'Your server url not setted yet';
+        }
         var res = await http.get(
           Uri.parse('${serverUrl}tasks'),
         );
         return res.body;
       },
       UserChatState.all,
-      adminCommand: true,
     ),
     BotCommand(
       'add',
@@ -64,6 +70,10 @@ class Dloader {
       'add:https://link_here.com/example',
       (authorId, command, body) async {
         var link = body[command];
+        var serverUrl = peers[authorId];
+        if (serverUrl == null) {
+          return 'Your server url not setted yet';
+        }
         var res = await http.post(
           Uri.parse('${serverUrl}add'),
           headers: {'link': link},
@@ -71,7 +81,6 @@ class Dloader {
         return res.body;
       },
       UserChatState.all,
-      adminCommand: true,
     ),
     BotCommand(
       'status',
@@ -79,6 +88,10 @@ class Dloader {
       'status:https://link_here.com/example',
       (authorId, command, body) async {
         var link = body[command];
+        var serverUrl = peers[authorId];
+        if (serverUrl == null) {
+          return 'Your server url not setted yet';
+        }
         var res = await http.get(
           Uri.parse('${serverUrl}status'),
           headers: {'link': link},
@@ -86,7 +99,6 @@ class Dloader {
         return res.body;
       },
       UserChatState.all,
-      adminCommand: true,
     ),
     BotCommand(
       'setdl',
@@ -98,7 +110,6 @@ class Dloader {
         return 'OK';
       },
       UserChatState.all,
-      adminCommand: true,
     ),
   ];
 }
