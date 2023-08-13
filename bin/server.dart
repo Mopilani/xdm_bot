@@ -13,6 +13,7 @@ import 'bot_command.dart';
 import 'endpoints.dart';
 import 'io_functions.dart';
 import 'lesson.dart';
+import 'net_helper/dloader.dart';
 
 var conf;
 void main(List<String> args) async {
@@ -90,6 +91,11 @@ void main(List<String> args) async {
   var file = File('tpm.json');
   var r = await file.readAsString();
   groupsList = json.decode(r);
+  
+  file = File('dl.peers.json');
+  r = await file.readAsString();
+  Dloader.peers.addAll(json.decode(r));
+
   file = File('tpmx.json');
   r = await file.readAsString();
   BotCommand.adminsList.addAll(<String>[...json.decode(r)]);

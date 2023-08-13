@@ -17,7 +17,7 @@ class Dloader {
 
   static var serverUrl = 'http://localhost:8186/';
 
-  Map<String, dynamic> peers = {
+  static final Map<String, dynamic> peers = {
     // peer idm (phone number) : peer dloader client,
   };
 
@@ -94,6 +94,7 @@ class Dloader {
       'setdl:$serverUrl',
       (authorId, command, body) async {
         serverUrl = body[command];
+        peers[authorId] = serverUrl;
         return 'OK';
       },
       UserChatState.all,
