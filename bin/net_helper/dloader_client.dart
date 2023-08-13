@@ -6,10 +6,9 @@ void main(List<String> args) async {
     Uri.parse('http://localhost:8000/video'),
     headers: {
       'link': link,
-      'range':'100-',
+      'range': '100-',
     },
   );
-
 
   print(r.statusCode);
   print('----------------------------');
