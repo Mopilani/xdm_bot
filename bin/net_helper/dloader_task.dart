@@ -44,6 +44,7 @@ class DloaderTask {
     if (res.statusCode == 503) {
       // put in the queue
       tryAfter = tryAt(hours: 1);
+      return;
     }
 
     started = true;
