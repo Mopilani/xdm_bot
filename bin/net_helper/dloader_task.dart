@@ -17,17 +17,19 @@ class DloaderTask {
 
   var stoptimer = false;
 
-  void timer() {
-    Future.delayed(Duration(seconds: 10), () {
-      print(status());
-      if (!stoptimer) {
-        timer();
-      }
-    });
-  }
+  // void timer() {
+  //   Future.delayed(Duration(seconds: 10), () {
+  //     // print(status());
+  //     if (!stoptimer) {
+  //       timer();
+  //     }
+  //   });
+  // }
 
   String status() {
-    return 'Downloaded: $downloaded - $size';
+    return 'Downloaded: $downloaded - $size\n'
+        'Started: $started, TryAt: ${tryAfter.month}/${tryAfter.day}'
+        ' ${tryAfter.hour}:${tryAfter.minute}';
   }
 
   Future<void> start() async {
@@ -55,7 +57,7 @@ class DloaderTask {
 
     var raf = await file.open(mode: FileMode.writeOnly);
 
-    timer();
+    // timer();
 
     void onDone() {
       stoptimer = true;
