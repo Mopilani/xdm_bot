@@ -8,6 +8,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'net_helper/dloader_task.dart';
 
+var tasksFile = File('dl.s.json');
 // https://dl3.downloadly.ir/Files/Elearning/Coursera_Foundations_of_Cybersecurity_2023_5_Downloadly.ir.rar
 void main(List<String> args) async {
   var sport = args.isNotEmpty ? args[0] : '8186';
@@ -19,8 +20,7 @@ void main(List<String> args) async {
   final server = await serve(handler, '0.0.0.0', port);
   print('Server listening on port ${server.port}');
 
-  var file = File('dl.s.json');
-  var r = await file.readAsString();
+  var r = await tasksFile.readAsString();
   clients = json.decode(r);
 
   Future.delayed(Duration(seconds: 5), () {
@@ -57,6 +57,7 @@ final router = Router()
   ..get('/resume', (_) {})
   ..get('/status', status)
   ..get('/tasks', tasks)
+  ..get('/shutdown', shutdown)
   ..get('/k/<v>', (_) {});
 
 Future<Response> cancel(Request req) async {
@@ -66,6 +67,19 @@ Future<Response> cancel(Request req) async {
     return Response.ok('OK');
   } else {
     return Response.ok('Link not found in the queue');
+  }
+}
+
+Future<Response> shutdown(Request req) async {
+  try {
+    await tasksFile.writeAsString(json.encode(clients));
+    var res = Response.ok('Shutting Down...');
+    Future.delayed(Duration(seconds: 3), () {
+      exit(0);
+    });
+    return res;
+  } catch (e) {
+    return Response.internalServerError(body: "Cant shutdown: $e");
   }
 }
 
