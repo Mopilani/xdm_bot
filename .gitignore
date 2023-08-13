@@ -9,6 +9,7 @@ tpm.json
 tpmx.json
 
 dl.s.json
+dl.peers.json
 
 # _tpm.json
 # _tpmx.json
