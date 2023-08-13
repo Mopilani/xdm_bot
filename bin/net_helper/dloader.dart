@@ -21,9 +21,6 @@ class Dloader {
     // peer idm (phone number) : peer dloader client,
   };
 
-  // static http.Client client = http.Client();
-
-  // static Map<String, DloaderTask> clients = {};
 
   Map<String, dynamic> asMap() => {
         'id': id,
