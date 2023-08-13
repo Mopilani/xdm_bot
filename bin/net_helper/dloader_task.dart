@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 class DloaderTask {
-  String link;
+  late String link;
 
   DloaderTask(this.link);
 
@@ -11,11 +11,34 @@ class DloaderTask {
 
   var downloaded = 0;
   var size = 0;
-  // var done = false;
+  var finised = false;
   var started = false;
   DateTime tryAfter = DateTime.now();
 
   var stoptimer = false;
+
+  Map<String, dynamic> asMap() => {
+        'link': link,
+        'downloaded': downloaded,
+        'size': size,
+        'started': started,
+        'tryAfter': tryAfter.toString(),
+        'stoptimer': stoptimer,
+        'finised': finised,
+      };
+
+  DloaderTask.from();
+
+  static DloaderTask fromMap(Map data) {
+    var task = DloaderTask.from();
+    task.link = data['link'];
+    task.downloaded = data['downloaded'];
+    task.size = data['size'];
+    task.started = data['started'];
+    task.tryAfter = DateTime.parse(data['tryAfter']);
+    task.stoptimer = data['stoptimer'];
+    return task;
+  }
 
   // void timer() {
   //   Future.delayed(Duration(seconds: 10), () {
