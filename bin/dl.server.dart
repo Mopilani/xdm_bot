@@ -111,8 +111,9 @@ Future<Response> tasks(Request req) async {
   var tasksList = 'Tasks: \n';
   for (int i = 0; i < clients.entries.length; i++) {
     var entry = clients.entries.toList()[i];
-    tasksList += '$i: ${entry.key}\n'
-        '${entry.value.downloaded} - ${entry.value.size},\n';
+    tasksList += entry.value.status();
+    // tasksList += '$i: ${entry.key}\n'
+    //     '${entry.value.downloaded} - ${entry.value.size},\n';
   }
   return Response.ok(tasksList);
 }
