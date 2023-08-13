@@ -55,11 +55,25 @@ final router = Router()
   ..get('/cancel', cancel)
   ..get('/remove', (_) {})
   ..get('/stop', (_) {})
-  ..get('/resume', (_) {})
+  ..get('/resume', resume)
   ..get('/status', status)
   ..get('/tasks', tasks)
   ..get('/shutdown', shutdown)
   ..get('/k/<v>', (_) {});
+
+Future<Response> resume(Request req, [bool redown = false]) async {
+  var link = req.headers['link'];
+  if (link == null) {
+    return Response.ok('You must provide a valid link');
+  }
+  if (clients[link] != null && !redown) {
+    return Response.ok('Link was exits');
+  }
+  var task = DloaderTask(link);
+  await task.start();
+  clients.addAll({link: task});
+  return Response.ok('OK');
+}
 
 Future<Response> cancel(Request req) async {
   var link = req.headers['link'];
