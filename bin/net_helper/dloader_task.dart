@@ -11,7 +11,7 @@ class DloaderTask {
 
   var downloaded = 0;
   var size = 0;
-  var finised = false;
+  var finished = false;
   var started = false;
   DateTime tryAfter = DateTime.now();
 
@@ -24,7 +24,7 @@ class DloaderTask {
         'started': started,
         'tryAfter': tryAfter.toString(),
         'stoptimer': stoptimer,
-        'finised': finised,
+        'finished': finished,
       };
 
   DloaderTask.from();
@@ -37,6 +37,7 @@ class DloaderTask {
     task.started = data['started'];
     task.tryAfter = DateTime.parse(data['tryAfter']);
     task.stoptimer = data['stoptimer'];
+    task.finished = data['finished'];
     return task;
   }
 
@@ -52,7 +53,7 @@ class DloaderTask {
   String status() {
     return 'Downloaded: $downloaded - $size\n'
         'Started: $started, TryAt: ${tryAfter.month}/${tryAfter.day}'
-        ' ${tryAfter.hour}:${tryAfter.minute}';
+        ' ${tryAfter.hour}:${tryAfter.minute} - $finished';
   }
 
   Future<void> start() async {
