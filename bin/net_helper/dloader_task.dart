@@ -13,6 +13,7 @@ class DloaderTask {
   var size = 0;
   var finished = false;
   var started = false;
+  var running = false;
   DateTime tryAfter = DateTime.now();
 
   var stoptimer = false;
@@ -56,53 +57,90 @@ class DloaderTask {
         ' ${tryAfter.hour}:${tryAfter.minute} - $finished';
   }
 
+  late RandomAccessFile raf;
+
   Future<void> start() async {
     var fileName = link.split('/').last;
-
     var file = File('downloads/$fileName');
 
     var client = HttpClient();
     var req = await client.getUrl(Uri.parse(link));
-
     res = await req.close();
-    print('Headers: ${res.headers} :Heders');
+    print(
+      'StatusCode: ${res.statusCode} :StatusCode\n'
+      'Headers: ${res.headers} :Heders',
+    );
 
     if (res.statusCode == 503) {
-      // put in the queue
       tryAfter = tryAt(hours: 1);
       return;
     }
 
     started = true;
+    running = true;
 
     if (res.headers['content-length'] != null) {
       size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
     }
 
-    var raf = await file.open(mode: FileMode.writeOnly);
-
-    // timer();
-
-    void onDone() {
-      stoptimer = true;
-      print('Done successfuly');
-    }
-
-    void onError(e, s) {
-      print(e);
-      print(s);
-    }
-
-    void onData(List<int> event) async {
-      downloaded += event.length;
-      raf.writeFromSync(event);
-    }
+    raf = await file.open(mode: FileMode.writeOnly);
 
     sub = res.listen(
       onData,
       onDone: onDone,
       onError: onError,
     );
+  }
+
+  Future<void> resume() async {
+    var fileName = link.split('/').last;
+    var file = File('downloads/$fileName');
+
+    var client = HttpClient();
+    var req = await client.getUrl(
+      Uri.parse(link),
+    );
+    req.headers.add(HttpHeaders.rangeHeader, '');
+    res = await req.close();
+    print(
+      'StatusCode: ${res.statusCode} :StatusCode\n'
+      'Headers: ${res.headers} :Heders',
+    );
+
+    if (res.statusCode == 503) {
+      tryAfter = tryAt(hours: 1);
+      return;
+    }
+
+    started = true;
+    running = true;
+
+    if (res.headers['content-length'] != null) {
+      size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
+    }
+
+    raf = await file.open(mode: FileMode.writeOnly);
+
+    sub = res.listen(
+      onData,
+      onDone: onDone,
+      onError: onError,
+    );
+  }
+
+  void onDone() {
+    stoptimer = true;
+    print('Done successfuly');
+  }
+
+  void onError(e, s) {
+    print(e);
+    print(s);
+  }
+
+  void onData(List<int> event) async {
+    downloaded += event.length;
+    raf.writeFromSync(event);
   }
 
   DateTime tryAt({
