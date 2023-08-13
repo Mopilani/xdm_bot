@@ -6,8 +6,9 @@ faq.json
 lessons.json
 authors.json
 tpm.json
+tpmx.json
 
-_tpm.json
-_tpmx.json
+# _tpm.json
+# _tpmx.json
 
 links.dart
