@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:shelf/shelf.dart';
@@ -17,6 +18,10 @@ void main(List<String> args) async {
   final port = int.parse(Platform.environment['PORT'] ?? sport);
   final server = await serve(handler, '0.0.0.0', port);
   print('Server listening on port ${server.port}');
+
+  var file = File('dl.s.json');
+  var r = await file.readAsString();
+  clients = json.decode(r);
 
   Future.delayed(Duration(seconds: 5), () {
     tick();
