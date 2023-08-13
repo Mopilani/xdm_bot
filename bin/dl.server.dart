@@ -110,7 +110,7 @@ Future<Response> tasks(Request req) async {
   var tasksList = 'Tasks: \n';
   for (int i = 0; i < clients.entries.length; i++) {
     var entry = clients.entries.toList()[i];
-    tasksList += entry.value.status();
+    tasksList += '$i: ${entry.value.status()}';
   }
   return Response.ok(tasksList);
 }
