@@ -100,7 +100,13 @@ class DloaderTask {
     var req = await client.getUrl(
       Uri.parse(link),
     );
-    req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
+    var length = raf.lengthSync();
+    if (length != downloaded) {
+      downloaded = length;
+      req.headers.add(HttpHeaders.rangeHeader, '$length-');
+    } else {
+      req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
+    }
     res = await req.close();
     print(
       'StatusCode: ${res.statusCode} :StatusCode\n'
