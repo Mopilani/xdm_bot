@@ -21,7 +21,7 @@ void main(List<String> args) async {
   print('Server listening on port ${server.port}');
 
   var r = await tasksFile.readAsString();
-  for (var entry in json.decode(r)) {
+  for (var entry in json.decode(r).entries) {
     clients.addAll({entry.key: DloaderTask.fromMap(entry.value)});
   }
   Future.delayed(Duration(seconds: 5), () {
