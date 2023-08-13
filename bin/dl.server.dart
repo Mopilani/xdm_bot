@@ -9,7 +9,6 @@ import 'package:shelf_router/shelf_router.dart';
 import 'net_helper/dloader_task.dart';
 
 var tasksFile = File('dl.s.json');
-// https://dl3.downloadly.ir/Files/Elearning/Coursera_Foundations_of_Cybersecurity_2023_5_Downloadly.ir.rar
 void main(List<String> args) async {
   var sport = args.isNotEmpty ? args[0] : '8186';
   // Configure a pipeline that logs requests.
@@ -112,8 +111,6 @@ Future<Response> tasks(Request req) async {
   for (int i = 0; i < clients.entries.length; i++) {
     var entry = clients.entries.toList()[i];
     tasksList += entry.value.status();
-    // tasksList += '$i: ${entry.key}\n'
-    //     '${entry.value.downloaded} - ${entry.value.size},\n';
   }
   return Response.ok(tasksList);
 }
