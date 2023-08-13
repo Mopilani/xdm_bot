@@ -92,7 +92,7 @@ void main(List<String> args) async {
   groupsList = json.decode(r);
   file = File('tpmx.json');
   r = await file.readAsString();
-  BotCommand.adminsList.addAll(json.decode(r));
+  BotCommand.adminsList.addAll(<String>[...json.decode(r)]);
   Author.tick();
   BotCommand.loadCommands();
 
