@@ -54,7 +54,7 @@ class DloaderTask {
   String status() {
     return 'Downloaded: $downloaded from $size\n'
         'Started: ${started ? 'Started' : 'Not Started'}, TryAt: ${tryAfter.month}/${tryAfter.day}'
-        ' ${tryAfter.hour}:${tryAfter.minute} - ${finished ? 'Finised' : 'Not Finised'}';
+        ' ${tryAfter.hour}:${tryAfter.minute} - ${finished ? 'Finised' : 'Not Finised'}\n';
   }
 
   late RandomAccessFile raf;
