@@ -139,7 +139,7 @@ class DloaderTask {
                 (res.headers[HttpHeaders.contentLengthHeader]![0]),
               );
           print('size: $size == expectedSize: $expectedSize');
-          if (size == expectedSize) {
+          if (size == expectedSize || expectedSize > size) {
             partialContent = false;
           }
         } else {
