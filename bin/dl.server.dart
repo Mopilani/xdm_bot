@@ -55,7 +55,7 @@ final router = Router()
   ..get('/remove', (_) {})
   ..get('/stop', (_) {})
   ..post('/resume', resume)
-  ..post('/resume/<number>', resume)
+  ..get('/resume/<number>', resume)
   ..get('/status', status)
   ..get('/tasks', tasks)
   ..get('/shutdown', shutdown);
