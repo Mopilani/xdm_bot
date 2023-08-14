@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 
 class DloaderTask {
   late String link;
@@ -14,6 +15,9 @@ class DloaderTask {
   var finished = false;
   var started = false;
   var running = false;
+
+  String? stopMsg = '';
+
   DateTime tryAfter = DateTime.now();
 
   var stoptimer = false;
@@ -53,96 +57,170 @@ class DloaderTask {
 
   String status() {
     return '$link\n'
-    'Downloaded: $downloaded from $size\n'
+        'Downloaded: $downloaded from $size\n'
         'Started: ${started ? 'Started' : 'Not Started'}, TryAt: ${tryAfter.month}/${tryAfter.day}'
         ' ${tryAfter.hour}:${tryAfter.minute} - ${finished ? 'Finised' : 'Not Finised'}\n';
   }
 
   late RandomAccessFile raf;
+  bool partialContent = false;
+  bool firstTry = true;
+
+  bool _continue(int statusCode) {
+    switch (statusCode) {
+      case 503:
+        tryAfter = tryAt(hours: 1);
+        return false;
+      case 400:
+        stopMsg = 'Bad Request';
+        onError(RemoteError(stopMsg!, ''), StackTrace.current);
+        return false;
+      case 404:
+        stopMsg = 'Not Found';
+        onError(RemoteError(stopMsg!, ''), StackTrace.current);
+        return false;
+      case 500:
+        stopMsg = 'Internal Server Eror';
+        onError(RemoteError(stopMsg!, ''), StackTrace.current);
+        return false;
+      case 206:
+        print('Partial_Content');
+        partialContent = true;
+        return true;
+      default:
+        return true;
+    }
+  }
 
   Future<void> start() async {
     var fileName = link.split('/').last;
     var file = File('downloads/$fileName');
-
     var client = HttpClient();
-    var req = await client.getUrl(Uri.parse(link));
-    res = await req.close();
-    print(
-      'StatusCode: ${res.statusCode} :StatusCode\n'
-      'Headers: ${res.headers} :Heders',
-    );
 
-    if (res.statusCode == 503) {
-      tryAfter = tryAt(hours: 1);
-      return;
+    while (partialContent || firstTry) {
+      await Future.delayed(Duration(seconds: 1));
+      var req = await client.getUrl(Uri.parse(link));
+
+      if (partialContent) {
+        // var length = file.statSync().size;
+        // if (length != downloaded) {
+        //   downloaded = length;
+        //   req.headers.add(HttpHeaders.rangeHeader, '$length-');
+        // } else {
+        req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
+        // }
+      }
+
+      res = await req.close();
+
+      print(
+        'StatusCode: ${res.statusCode} :StatusCode\n'
+        'Headers: ${res.headers} :Heders',
+      );
+
+      if (_continue(res.statusCode)) {
+        // continue
+      } else {
+        return;
+      }
+
+      started = true;
+      running = true;
+
+      if (res.headers[HttpHeaders.contentRangeHeader] != null) {
+        size = int.parse(
+          (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+        );
+      } else {
+        if (res.headers[HttpHeaders.contentLengthHeader] != null) {
+          size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
+        }
+      }
+
+      raf = await file.open(mode: FileMode.writeOnly);
+
+      sub = res.listen(
+        onData,
+        onDone: onDone,
+        onError: onError,
+      );
+      await sub.asFuture();
+      firstTry = false;
     }
-
-    started = true;
-    running = true;
-
-    if (res.headers['content-length'] != null) {
-      size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
-    }
-
-    raf = await file.open(mode: FileMode.writeOnly);
-
-    sub = res.listen(
-      onData,
-      onDone: onDone,
-      onError: onError,
-    );
   }
 
-  Future<void> resume() async {
-    var fileName = link.split('/').last;
-    var file = File('downloads/$fileName');
+  // Future<void> resume() async {
+  //   var fileName = link.split('/').last;
+  //   var exits = true;
+  //   var partNumber = 0;
+  //   File file = File('downloads/$fileName');
 
-    var client = HttpClient();
-    var req = await client.getUrl(
-      Uri.parse(link),
-    );
-    var length = file.statSync().size;
-    if (length != downloaded) {
-      downloaded = length;
-      req.headers.add(HttpHeaders.rangeHeader, '$length-');
-    } else {
-      req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
-    }
-    res = await req.close();
-    print(
-      'StatusCode: ${res.statusCode} :StatusCode\n'
-      'Headers: ${res.headers} :Heders',
-    );
+  //   while (exits) {
+  //     if (file.existsSync()) {
+  //       partNumber++;
+  //       file = File('downloads/$fileName-($partNumber).xdl.part');
+  //     } else {
+  //       exits = false;
+  //     }
+  //   }
 
-    if (res.statusCode == 503) {
-      tryAfter = tryAt(hours: 1);
-      return;
-    }
+  //   var client = HttpClient();
+  //   var req = await client.getUrl(
+  //     Uri.parse(link),
+  //   );
 
-    started = true;
-    running = true;
+  //   var length = file.statSync().size;
+  //   if (length != downloaded) {
+  //     downloaded = length;
+  //     req.headers.add(HttpHeaders.rangeHeader, '$length-');
+  //   } else {
+  //     req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
+  //   }
 
-    if (res.headers['content-length'] != null) {
-      size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
-    }
+  //   res = await req.close();
+  //   print(
+  //     'StatusCode: ${res.statusCode} :StatusCode\n'
+  //     'Headers: ${res.headers} :Heders',
+  //   );
 
-    raf = await file.open(mode: FileMode.writeOnly);
+  //   if (_continue(res.statusCode)) {
+  //     // continue
+  //   } else {
+  //     return;
+  //   }
 
-    sub = res.listen(
-      onData,
-      onDone: onDone,
-      onError: onError,
-    );
-  }
+  //   started = true;
+  //   running = true;
+
+  //   if (res.headers['content-length'] != null) {
+  //     size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
+  //   }
+
+  //   raf = await file.open(mode: FileMode.writeOnly);
+
+  //   sub = res.listen(
+  //     onData,
+  //     onDone: onDone,
+  //     onError: onError,
+  //   );
+  // }
 
   void onDone() {
     stoptimer = true;
+    running = false;
+    if (downloaded == size) {
+      finished = true;
+    }
     print('Done successfuly');
   }
 
   void onError(e, s) {
     print(e);
     print(s);
+    running = false;
+    if (downloaded == size) {
+      finished = true;
+    }
   }
 
   void onData(List<int> event) async {
