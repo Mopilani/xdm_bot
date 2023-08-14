@@ -55,13 +55,24 @@ final router = Router()
   ..get('/remove', (_) {})
   ..get('/stop', (_) {})
   ..post('/resume', resume)
+  ..post('/resume/<number>', resume)
   ..get('/status', status)
   ..get('/tasks', tasks)
-  ..get('/shutdown', shutdown)
-  ..get('/k/<v>', (_) {});
+  ..get('/shutdown', shutdown);
 
-Future<Response> resume(Request req, [bool b = false]) async {
-  var link = req.headers['link'];
+Future<Response> resume(Request req) async {
+  var taskNumber = int.tryParse(req.params['number'] ?? 'NA');
+  String? link;
+
+  if (taskNumber != null) {
+    link = req.headers['link'] ??
+        (taskNumber < clients.keys.length
+            ? clients.keys.toList()[taskNumber]
+            : null);
+  } else {
+    link = req.headers['link'];
+  }
+
   if (link == null) {
     return Response.ok('You must provide a valid link');
   }
@@ -86,7 +97,8 @@ Future<Response> cancel(Request req) async {
 
 Future<Response> shutdown(Request req) async {
   try {
-    await tasksFile.writeAsString(json.encode(clients));
+    await tasksFile.writeAsString(
+        json.encode(clients.map((key, value) => MapEntry(key, value.asMap()))));
     var res = Response.ok('Shutting Down...');
     Future.delayed(Duration(seconds: 3), () {
       exit(0);
