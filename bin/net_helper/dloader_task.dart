@@ -162,6 +162,14 @@ class DloaderTask {
     }
   }
 
+  Future<void> stop() async {
+    await sub.cancel();
+    stoptimer = true;
+    running = false;
+    raf.closeSync();
+    print('Stopped successfuly');
+  }
+
   Future<void> resume() async {
     partialContent = true;
     firstTry = false;
