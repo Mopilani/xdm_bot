@@ -232,9 +232,6 @@ class DloaderTask {
     print(e);
     print(s);
     running = false;
-    if (downloaded == size) {
-      finished = true;
-    }
     raf.closeSync();
   }
 
