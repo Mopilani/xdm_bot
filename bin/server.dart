@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+// import 'dart:typed_data';
 
 import 'package:dart_telegram_bot/dart_telegram_bot.dart';
 import 'package:dart_telegram_bot/telegram_entities.dart' as telegram_entities;
@@ -65,6 +66,15 @@ void main(List<String> args) async {
           telegram_entities.ChatID(update.message!.chat.id),
           (await res.readAsString()).toString(),
         );
+        // bot.sendDocument(
+        //   chatId,
+        //   telegram_entities.HttpFile.fromBytes(
+        //     'name',
+        //     Uint8List.fromList([
+        //       ...'bytes'.codeUnits,
+        //     ]),
+        //   ),
+        // );
       } else {
         if (supportedCommands[msgTxt] != null) {
           var req = Request('GET', Uri.parse('http://localhost.com/'));
