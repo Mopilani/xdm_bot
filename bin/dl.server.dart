@@ -97,9 +97,13 @@ Future<Response> cancel(Request req) async {
 
 Future<Response> shutdown(Request req) async {
   try {
-    clients.forEach((key, value) { });
+    clients.forEach((key, value) {});
     for (var client in clients.entries) {
-      await client.value.stop();
+      try {
+        await client.value.stop();
+      } catch (e) {
+        // 
+      }
     }
     await tasksFile.writeAsString(
         json.encode(clients.map((key, value) => MapEntry(key, value.asMap()))));
