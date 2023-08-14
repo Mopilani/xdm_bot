@@ -92,7 +92,7 @@ class DloaderTask {
     }
   }
 
-  Future<void> start() async {
+  Future<void> start([bool resume = false]) async {
     var fileName = link.split('/').last;
     var file = File('downloads/$fileName');
     var client = HttpClient();
@@ -104,7 +104,7 @@ class DloaderTask {
         // await Future.delayed(Duration(seconds: 1));
         var req = await client.getUrl(Uri.parse(link));
 
-        if (partialContent) {
+        if (partialContent || resume) {
           req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
         }
 
@@ -159,7 +159,7 @@ class DloaderTask {
   Future<void> resume() async {
     partialContent = true; 
     firstTry = false;
-    await start();
+    await start(true);
   }
 
   // Future<void> resume() async {
