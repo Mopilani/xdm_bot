@@ -136,7 +136,7 @@ Future<Response> add(Request req, [bool redown = false]) async {
     return Response.ok('Link was exits');
   }
   var task = DloaderTask(link);
-  await task.start();
+  task.start();
   clients.addAll({link: task});
   return Response.ok('OK');
 }
