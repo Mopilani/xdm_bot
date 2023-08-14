@@ -10,17 +10,17 @@ class DloaderTask {
   late HttpClientResponse res;
   late StreamSubscription sub;
 
-  var downloaded = 0;
-  var size = 0;
-  var finished = false;
-  var started = false;
-  var running = false;
+  int downloaded = 0;
+  int size = 0;
+  bool finished = false;
+  bool started = false;
+  bool running = false;
 
   String? stopMsg = '';
 
   DateTime tryAfter = DateTime.now();
 
-  var stoptimer = false;
+  bool stoptimer = false;
 
   Map<String, dynamic> asMap() => {
         'link': link,
@@ -97,56 +97,69 @@ class DloaderTask {
     var file = File('downloads/$fileName');
     var client = HttpClient();
 
-    while (partialContent || firstTry) {
-      await Future.delayed(Duration(seconds: 1));
-      var req = await client.getUrl(Uri.parse(link));
+    raf = await file.open(mode: FileMode.writeOnlyAppend);
 
-      if (partialContent) {
-        // var length = file.statSync().size;
-        // if (length != downloaded) {
-        //   downloaded = length;
-        //   req.headers.add(HttpHeaders.rangeHeader, '$length-');
-        // } else {
-        req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
-        // }
-      }
+    try {
+      while (partialContent || firstTry) {
+        // await Future.delayed(Duration(seconds: 1));
+        var req = await client.getUrl(Uri.parse(link));
 
-      res = await req.close();
-
-      print(
-        'StatusCode: ${res.statusCode} :StatusCode\n'
-        'Headers: ${res.headers} :Heders',
-      );
-
-      if (_continue(res.statusCode)) {
-        // continue
-      } else {
-        return;
-      }
-
-      started = true;
-      running = true;
-
-      if (res.headers[HttpHeaders.contentRangeHeader] != null) {
-        size = int.parse(
-          (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
-        );
-      } else {
-        if (res.headers[HttpHeaders.contentLengthHeader] != null) {
-          size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
+        if (partialContent) {
+          req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
         }
+
+        res = await req.close();
+
+        print(
+          'StatusCode: ${res.statusCode} :StatusCode\n'
+          'Headers: ${res.headers} :Heders',
+        );
+
+        if (_continue(res.statusCode)) {
+          // continue
+        } else {
+          return;
+        }
+
+        started = true;
+        running = true;
+
+        if (res.headers[HttpHeaders.contentRangeHeader] != null) {
+          size = int.parse(
+            (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+          );
+          int expectedSize = downloaded +
+              int.parse(
+                (res.headers[HttpHeaders.contentLengthHeader]![0]),
+              );
+          print('size: $size == expectedSize: $expectedSize');
+          if (size == expectedSize) {
+            partialContent = false;
+          }
+        } else {
+          if (res.headers[HttpHeaders.contentLengthHeader] != null) {
+            size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
+          }
+        }
+
+        sub = res.listen(
+          onData,
+          // onDone: onDone,
+          onError: onError,
+        );
+        await sub.asFuture();
+        firstTry = false;
       }
-
-      raf = await file.open(mode: FileMode.writeOnly);
-
-      sub = res.listen(
-        onData,
-        onDone: onDone,
-        onError: onError,
-      );
-      await sub.asFuture();
-      firstTry = false;
+      onDone();
+    } catch (e, s) {
+      onError(e, s);
     }
+  }
+
+  Future<void> resume() async {
+    partialContent = true; 
+    firstTry = false;
+    await start();
   }
 
   // Future<void> resume() async {
@@ -211,6 +224,7 @@ class DloaderTask {
     if (downloaded == size) {
       finished = true;
     }
+    raf.closeSync();
     print('Done successfuly');
   }
 
@@ -221,6 +235,7 @@ class DloaderTask {
     if (downloaded == size) {
       finished = true;
     }
+    raf.closeSync();
   }
 
   void onData(List<int> event) async {
