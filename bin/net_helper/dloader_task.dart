@@ -111,8 +111,14 @@ class DloaderTask {
         res = await req.close();
 
         print(
+          '---------------------------------------'
+          'ReqHeaders: ${req.headers} :ReqHeaders'
+          '---------------------------------------',
+        );
+
+        print(
           'StatusCode: ${res.statusCode} :StatusCode\n'
-          'Headers: ${res.headers} :Heders',
+          'Headers: ${res.headers} :Headers',
         );
 
         if (_continue(res.statusCode)) {
@@ -157,7 +163,7 @@ class DloaderTask {
   }
 
   Future<void> resume() async {
-    partialContent = true; 
+    partialContent = true;
     firstTry = false;
     await start(true);
   }
