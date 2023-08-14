@@ -101,7 +101,7 @@ class DloaderTask {
     var req = await client.getUrl(
       Uri.parse(link),
     );
-    var length = raf.lengthSync();
+    var length = file.statSync().size;
     if (length != downloaded) {
       downloaded = length;
       req.headers.add(HttpHeaders.rangeHeader, '$length-');
