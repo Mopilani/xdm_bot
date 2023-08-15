@@ -329,7 +329,7 @@ Future<Response> add(Request req, [bool redown = false]) async {
     return Response.ok('You must provide a valid link');
   }
   if (clients[link] != null && !redown) {
-    return Response.ok('Link was exits');
+    return Response.found('Link was exits');
   }
 
   List links = json.decode(await linksFile.readAsString());
