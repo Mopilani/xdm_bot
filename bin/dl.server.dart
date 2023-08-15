@@ -193,7 +193,7 @@ Future<Response> tasks(Request req) async {
   }
 
   var tasksList =
-      'Tasks: \n All: ${clients.entries.length}   |   Running: $running   |   Waiting: $waiting   |   Finished: $finished';
+      'Tasks:    All: ${clients.entries.length}   |   Running: $running   |   Waiting: $waiting   |   Finished: $finished  \n';
   for (int i = 0; i < clients.entries.length; i++) {
     var entry = clients.entries.toList()[i];
     tasksList += '$i: ${entry.value.status()}';
