@@ -116,7 +116,7 @@ Future<Response> refresh(Request req) async {
     return Response.ok('Link not exits');
   }
 
-  var links = json.decode(await linksFile.readAsString());
+  List links = json.decode(await linksFile.readAsString());
   links.add(nLink);
   await linksFile.writeAsString(json.encode(links));
 
@@ -179,7 +179,7 @@ Future<Response> ping(Request req) async {
 Future<Response> shutdown(Request req) async {
   try {
     clients.forEach((key, value) {});
-    var links = <String>[];
+    List<String> links = <String>[];
     for (var client in clients.entries) {
       try {
         await client.value.stop();
@@ -213,7 +213,7 @@ Future<Response> status(Request req) async {
 
 Future<Response> recover(Request req) async {
   // var link = req.headers['link'];
-  var links = json.decode(await linksFile.readAsString());
+  List links = json.decode(await linksFile.readAsString());
   for (var link in links) {
     // if (link == null) {
     //   return Response.badRequest(body: 'Please provide valid link');
@@ -255,6 +255,9 @@ Future<Response> remove(Request req) async {
   var link = req.headers['link'];
   if (clients[link] != null) {
     clients.remove(link);
+    List links = json.decode(await linksFile.readAsString());
+    links.remove(link);
+    await linksFile.writeAsString(json.encode(links));
     return Response.ok('Removed Successfully');
   } else {
     return Response.ok('Link not found in the queue');
@@ -329,7 +332,7 @@ Future<Response> add(Request req, [bool redown = false]) async {
     return Response.ok('Link was exits');
   }
 
-  var links = json.decode(await linksFile.readAsString());
+  List links = json.decode(await linksFile.readAsString());
   links.add(link);
   await linksFile.writeAsString(json.encode(links));
 
