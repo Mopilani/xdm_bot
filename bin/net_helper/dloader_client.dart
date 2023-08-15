@@ -19,11 +19,11 @@ void main(List<String> args) async {
 
   var r = await http.post(
     // Uri.parse('http://167.172.167.245:8186/add'),
-    Uri.parse('http://167.172.167.245:8186/redown'),
+    // Uri.parse('http://167.172.167.245:8186/redown'),
     // Uri.parse('http://localhost:8186/resume/0'),
     // Uri.parse('http://localhost:8186/resume'),
     // Uri.parse('http://localhost:8186/add'),
-    // Uri.parse('http://localhost:8186/redown'),
+    Uri.parse('http://localhost:8186/redown'),
     headers: {'link': link},
   );
 
