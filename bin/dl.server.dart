@@ -11,6 +11,8 @@ import 'net_helper/dloader_task.dart';
 import 'package:http/http.dart' as http;
 
 var tasksFile = File('dl.s.json');
+var linksFile = File('.links');
+
 void main(List<String> args) async {
   var sport = args.isNotEmpty ? args[0] : '8186';
   // Configure a pipeline that logs requests.
@@ -111,6 +113,11 @@ Future<Response> refresh(Request req) async {
   if (clients[link] == null) {
     return Response.ok('Link not exits');
   }
+
+  var links = json.decode(await linksFile.readAsString());
+  links.add(nLink);
+  await linksFile.writeAsString(json.encode(links));
+
   var task = clients[link]!;
   task.link = nLink!;
   clients.addAll({nLink: task});
@@ -161,8 +168,7 @@ Future<Response> status(Request req) async {
 
 Future<Response> recover(Request req) async {
   // var link = req.headers['link'];
-  var linksFile = File('.links');
-  var links = await linksFile.readAsLines();
+  var links = json.decode(await linksFile.readAsString());
   for (var link in links) {
     // if (link == null) {
     //   return Response.badRequest(body: 'Please provide valid link');
@@ -277,6 +283,11 @@ Future<Response> add(Request req, [bool redown = false]) async {
   if (clients[link] != null && !redown) {
     return Response.ok('Link was exits');
   }
+
+  var links = json.decode(await linksFile.readAsString());
+  links.add(link);
+  await linksFile.writeAsString(json.encode(links));
+
   var task = DloaderTask(link);
   task.start();
   clients.addAll({link: task});
