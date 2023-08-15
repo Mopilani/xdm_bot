@@ -175,7 +175,25 @@ Future<Response> remove(Request req) async {
 }
 
 Future<Response> tasks(Request req) async {
-  var tasksList = 'Tasks: \n';
+  var running = 0;
+  var finished = 0;
+  var waiting = 0;
+
+  for (int i = 0; i < clients.entries.length; i++) {
+    var entry = clients.entries.toList()[i];
+    if (entry.value.finished) {
+      finished++;
+    }
+    if (entry.value.running) {
+      running++;
+    }
+    if (entry.value.waiting) {
+      waiting++;
+    }
+  }
+
+  var tasksList =
+      'Tasks: \n All: ${clients.entries.length}   |   Running: $running   |   Waiting: $waiting   |   Finished: $finished';
   for (int i = 0; i < clients.entries.length; i++) {
     var entry = clients.entries.toList()[i];
     tasksList += '$i: ${entry.value.status()}';
