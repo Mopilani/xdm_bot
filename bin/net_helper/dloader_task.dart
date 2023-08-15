@@ -15,6 +15,7 @@ class DloaderTask {
   bool finished = false;
   bool started = false;
   bool running = false;
+  bool waiting = false;
 
   String? stopMsg = '';
 
@@ -70,6 +71,7 @@ class DloaderTask {
     switch (statusCode) {
       case 503:
         tryAfter = tryAt(hours: 1);
+        waiting = true;
         return false;
       case 400:
         stopMsg = 'Bad Request';
@@ -167,6 +169,7 @@ class DloaderTask {
     await sub.cancel();
     stoptimer = true;
     running = false;
+    waiting = false;
     raf.closeSync();
     print('Stopped successfuly');
   }
@@ -236,6 +239,7 @@ class DloaderTask {
   void onDone() {
     stoptimer = true;
     running = false;
+    waiting = false;
     if (downloaded == size) {
       finished = true;
     }
@@ -246,7 +250,9 @@ class DloaderTask {
   void onError(e, s) {
     print(e);
     print(s);
+    stoptimer = true;
     running = false;
+    waiting = false;
     raf.closeSync();
   }
 

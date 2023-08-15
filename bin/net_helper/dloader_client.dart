@@ -18,8 +18,9 @@ void main(List<String> args) async {
   // print('----------------------------');
 
   var r = await http.post(
-    Uri.parse('http://139.59.74.96:8186/add'),
+    // Uri.parse('http://139.59.74.96:8186/add'),
     // Uri.parse('http://167.172.167.245:8186/add'),
+    Uri.parse('http://167.172.167.245:8186/refresh/number'),
     // Uri.parse('http://167.172.167.245:8186/redown'),
     // Uri.parse('http://localhost:8186/resume/0'),
     // Uri.parse('http://localhost:8186/resume'),

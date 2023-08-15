@@ -38,7 +38,7 @@ Future<void> tick() async {
     print("IT'S TIME-X");
     for (var entry in [...clients.entries]) {
       print("POP-X");
-      if (!entry.value.started) {
+      if (!entry.value.started || entry.value.waiting) {
         print("PIP-X");
         await clients[entry.key]!.start();
       }
