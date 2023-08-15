@@ -56,6 +56,7 @@ final router = Router()
   ..post('/add', add)
   ..post('/redown', (req) => add(req, true))
   ..get('/cancel', cancel)
+  ..get('/ping', ping)
   ..get('/remove', remove)
   ..get('/stop', stop)
   ..get('/resume', resume)
@@ -135,6 +136,10 @@ Future<Response> cancel(Request req) async {
   }
 }
 
+Future<Response> ping(Request req) async {
+  return Response.ok('Pong!');
+}
+
 Future<Response> shutdown(Request req) async {
   try {
     clients.forEach((key, value) {});
@@ -148,7 +153,7 @@ Future<Response> shutdown(Request req) async {
       links.add(client.key);
     }
     await linksFile.writeAsString(json.encode(links));
-    
+
     await tasksFile.writeAsString(
         json.encode(clients.map((key, value) => MapEntry(key, value.asMap()))));
     var res = Response.ok('Shutting Down...');
