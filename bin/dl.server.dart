@@ -326,7 +326,7 @@ Future<Response> tasksInJson(Request req) async {
 Future<Response> add(Request req, [bool redown = false]) async {
   var link = req.headers['link'];
   if (link == null) {
-    return Response.ok('You must provide a valid link');
+    return Response.badRequest(body: 'You must provide a valid link');
   }
   if (clients[link] != null && !redown) {
     return Response.found('Link was exits');
