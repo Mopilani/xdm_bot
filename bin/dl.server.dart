@@ -86,7 +86,7 @@ Future<Response> resume(Request req) async {
     return Response.badRequest(body: 'You must provide a valid link');
   }
   if (clients[link] == null) {
-    return Response.ok('Link not exits');
+    return Response.found('Link not exits');
   }
   var task = clients[link]!;
   await task.resume();
@@ -113,7 +113,7 @@ Future<Response> refresh(Request req) async {
     return Response.badRequest(body: 'You must provide a valid link');
   }
   if (clients[link] == null) {
-    return Response.ok('Link not exits');
+    return Response.found('Link not exits');
   }
 
   List links = json.decode(await linksFile.readAsString());
@@ -236,7 +236,7 @@ Future<Response> recover(Request req) async {
       }
       return Response.ok('Recovered Successfuly');
     } else {
-      return Response.ok('Link was exits queue');
+      return Response.found('Link was exits queue');
     }
   }
   return Response.ok('${links.length} Recovered Successfully.');
