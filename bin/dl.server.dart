@@ -59,6 +59,7 @@ final router = Router()
   ..get('/refresh/<number>', refresh)
   ..get('/status', status)
   ..get('/tasks', tasks)
+  ..get('/jsapi/tasks', tasksInJson)
   ..get('/shutdown', shutdown);
 
 Future<Response> resume(Request req) async {
@@ -199,6 +200,38 @@ Future<Response> tasks(Request req) async {
     tasksList += '$i: ${entry.value.status()}';
   }
   return Response.ok(tasksList);
+}
+
+Future<Response> tasksInJson(Request req) async {
+  var running = 0;
+  var finished = 0;
+  var waiting = 0;
+
+  for (int i = 0; i < clients.entries.length; i++) {
+    var entry = clients.entries.toList()[i];
+    if (entry.value.finished) {
+      finished++;
+    }
+    if (entry.value.running) {
+      running++;
+    }
+    if (entry.value.waiting) {
+      waiting++;
+    }
+  }
+  var body = <String, dynamic>{
+    'running': running,
+    'finished': finished,
+    'waiting': waiting,
+    'all': clients.entries.length,
+    'tasks': [],
+  };
+  for (int i = 0; i < clients.entries.length; i++) {
+    var entry = clients.entries.toList()[i];
+    body['tasks'].add(entry.value.inJson());
+  }
+
+  return Response.ok(json.encode(body));
 }
 
 Future<Response> add(Request req, [bool redown = false]) async {
