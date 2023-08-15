@@ -8,6 +8,8 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'net_helper/dloader_task.dart';
 
+import 'package:http/http.dart' as http;
+
 var tasksFile = File('dl.s.json');
 void main(List<String> args) async {
   var sport = args.isNotEmpty ? args[0] : '8186';
@@ -58,6 +60,7 @@ final router = Router()
   ..get('/resume/<number>', resume)
   ..get('/refresh/<number>', refresh)
   ..get('/status', status)
+  ..get('/recover', recover)
   ..get('/tasks', tasks)
   ..get('/jsapi/tasks', tasksInJson)
   ..get('/shutdown', shutdown);
@@ -154,6 +157,38 @@ Future<Response> status(Request req) async {
   } else {
     return Response.ok('Link not found in the queue');
   }
+}
+
+Future<Response> recover(Request req) async {
+  // var link = req.headers['link'];
+  var linksFile = File('.links');
+  var links = await linksFile.readAsLines();
+  for (var link in links) {
+    // if (link == null) {
+    //   return Response.badRequest(body: 'Please provide valid link');
+    // }
+    if (clients[link] == null) {
+      var fileName = link.split('/').last;
+      var file = File('downloads/$fileName');
+      if (await file.exists()) {
+        var fstat = await file.stat();
+        fstat.size;
+        var task = DloaderTask(link);
+        task.downloaded = fstat.size;
+
+        var res = await http.get(Uri.parse(link));
+        var size = int.parse(
+          (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+        );
+        task.size = size;
+        clients.addAll({link: task});
+      }
+      return Response.ok('Recovered Successfuly');
+    } else {
+      return Response.ok('Link was exits queue');
+    }
+  }
+  return Response.ok('${links.length} Recovered Successfully.');
 }
 
 Future<Response> stop(Request req) async {
