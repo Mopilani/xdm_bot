@@ -56,6 +56,7 @@ final router = Router()
   ..get('/stop', (_) {})
   ..get('/resume', resume)
   ..get('/resume/<number>', resume)
+  ..get('/refresh/<number>', refresh)
   ..get('/status', status)
   ..get('/tasks', tasks)
   ..get('/shutdown', shutdown);
@@ -85,6 +86,34 @@ Future<Response> resume(Request req) async {
   return Response.ok('OK');
 }
 
+Future<Response> refresh(Request req) async {
+  var taskNumber = int.tryParse(req.params['number'] ?? 'NA');
+  String? link;
+  String? nLink;
+
+  if (taskNumber != null) {
+    link = req.headers['link'] ??
+        (taskNumber < clients.keys.length
+            ? clients.keys.toList()[taskNumber]
+            : null);
+  } else {
+    link = req.headers['link'];
+  }
+  nLink = req.headers['nLink'];
+
+  if (link == null) {
+    return Response.ok('You must provide a valid link');
+  }
+  if (clients[link] == null) {
+    return Response.ok('Link not exits');
+  }
+  var task = clients[link]!;
+  task.link = nLink!;
+  clients.addAll({nLink: task});
+  clients.remove(nLink);
+  return Response.ok('OK');
+}
+
 Future<Response> cancel(Request req) async {
   var link = req.headers['link'];
   if (clients[link] != null) {
@@ -102,7 +131,7 @@ Future<Response> shutdown(Request req) async {
       try {
         await client.value.stop();
       } catch (e) {
-        // 
+        //
       }
     }
     await tasksFile.writeAsString(
