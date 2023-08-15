@@ -94,7 +94,7 @@ class DloaderTask {
     }
   }
 
-  Future<void> start([bool resume = false]) async {
+  Future<String> start([bool resume = false]) async {
     var fileName = link.split('/').last;
     var file = File('downloads/$fileName');
     var client = HttpClient();
@@ -127,7 +127,7 @@ class DloaderTask {
         if (_continue(res.statusCode)) {
           // continue
         } else {
-          return;
+          return 'In Queue, Waiting...';
         }
 
         started = true;
@@ -159,25 +159,26 @@ class DloaderTask {
         await sub.asFuture();
         firstTry = false;
       }
-      onDone();
+      return onDone();
     } catch (e, s) {
-      onError(e, s);
+      return onError(e, s);
     }
   }
 
-  Future<void> stop() async {
+  Future<String> stop() async {
     await sub.cancel();
     stoptimer = true;
     running = false;
     waiting = false;
     raf.closeSync();
-    print('Stopped successfuly');
+    return ('Stopped successfuly');
   }
 
-  Future<void> resume() async {
+  Future<String> resume() async {
     partialContent = true;
     firstTry = false;
     await start(true);
+    return ('Resuming Download');
   }
 
   // Future<void> resume() async {
@@ -236,7 +237,7 @@ class DloaderTask {
   //   );
   // }
 
-  void onDone() {
+  String onDone() {
     stoptimer = true;
     running = false;
     waiting = false;
@@ -244,16 +245,17 @@ class DloaderTask {
       finished = true;
     }
     raf.closeSync();
-    print('Done successfuly');
+    return ('Done successfuly');
   }
 
-  void onError(e, s) {
+  String onError(e, s) {
     print(e);
     print(s);
     stoptimer = true;
     running = false;
     waiting = false;
     raf.closeSync();
+    return e;
   }
 
   void onData(List<int> event) async {
