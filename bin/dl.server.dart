@@ -53,7 +53,7 @@ final router = Router()
   ..post('/redown', (req) => add(req, true))
   ..get('/cancel', cancel)
   ..get('/remove', (_) {})
-  ..get('/stop', (_) {})
+  ..get('/stop', stop)
   ..get('/resume', resume)
   ..get('/resume/<number>', resume)
   ..get('/refresh/<number>', refresh)
@@ -150,6 +150,15 @@ Future<Response> status(Request req) async {
   var link = req.headers['link'];
   if (clients[link] != null) {
     return Response.ok(clients[link]!.status());
+  } else {
+    return Response.ok('Link not found in the queue');
+  }
+}
+
+Future<Response> stop(Request req) async {
+  var link = req.headers['link'];
+  if (clients[link] != null) {
+    return Response.ok(clients[link]!.stop());
   } else {
     return Response.ok('Link not found in the queue');
   }
