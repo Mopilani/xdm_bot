@@ -63,6 +63,19 @@ class DloaderTask {
         ' ${tryAfter.hour}:${tryAfter.minute} - ${finished ? 'Finised' : 'Not Finished'}\n';
   }
 
+  Map<String, dynamic> inJson() {
+    return {
+      'link': link,
+      'downloaded': downloaded,
+      'size': size,
+      'started': started,
+      'tryAfter': tryAfter.toString(),
+      'stoptimer': stoptimer,
+      'running': running,
+      'finished': finished,
+    };
+  }
+
   late RandomAccessFile raf;
   bool partialContent = false;
   bool firstTry = true;
