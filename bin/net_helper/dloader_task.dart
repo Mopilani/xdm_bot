@@ -194,61 +194,8 @@ class DloaderTask {
     return ('Resuming Download');
   }
 
-  // Future<void> resume() async {
-  //   var fileName = link.split('/').last;
-  //   var exits = true;
-  //   var partNumber = 0;
-  //   File file = File('downloads/$fileName');
-
-  //   while (exits) {
-  //     if (file.existsSync()) {
-  //       partNumber++;
-  //       file = File('downloads/$fileName-($partNumber).xdl.part');
-  //     } else {
-  //       exits = false;
-  //     }
-  //   }
-
-  //   var client = HttpClient();
-  //   var req = await client.getUrl(
-  //     Uri.parse(link),
-  //   );
-
-  //   var length = file.statSync().size;
-  //   if (length != downloaded) {
-  //     downloaded = length;
-  //     req.headers.add(HttpHeaders.rangeHeader, '$length-');
-  //   } else {
-  //     req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
-  //   }
-
-  //   res = await req.close();
-  //   print(
-  //     'StatusCode: ${res.statusCode} :StatusCode\n'
-  //     'Headers: ${res.headers} :Heders',
-  //   );
-
-  //   if (_continue(res.statusCode)) {
-  //     // continue
-  //   } else {
-  //     return;
-  //   }
-
-  //   started = true;
-  //   running = true;
-
-  //   if (res.headers['content-length'] != null) {
-  //     size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
-  //   }
-
-  //   raf = await file.open(mode: FileMode.writeOnly);
-
-  //   sub = res.listen(
-  //     onData,
-  //     onDone: onDone,
-  //     onError: onError,
-  //   );
-  // }
+  //   while (exits) { if (file.existsSync()) { partNumber++;
+  //       file = File('downloads/$fileName-($partNumber).xdl.part'); } else { exits = false; } }
 
   String onDone() {
     stoptimer = true;
