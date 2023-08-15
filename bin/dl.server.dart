@@ -138,13 +138,17 @@ Future<Response> cancel(Request req) async {
 Future<Response> shutdown(Request req) async {
   try {
     clients.forEach((key, value) {});
+    var links = <String>[];
     for (var client in clients.entries) {
       try {
         await client.value.stop();
       } catch (e) {
         //
       }
+      links.add(client.key);
     }
+    await linksFile.writeAsString(json.encode(links));
+    
     await tasksFile.writeAsString(
         json.encode(clients.map((key, value) => MapEntry(key, value.asMap()))));
     var res = Response.ok('Shutting Down...');
