@@ -62,6 +62,7 @@ final router = Router()
   ..get('/resume', resume)
   ..get('/resume/<number>', resume)
   ..get('/refresh/<number>', refresh)
+  ..get('/s/<filename>', getFile)
   ..get('/status', status)
   ..get('/recover', recover)
   ..get('/tasks', tasks)
@@ -124,6 +125,41 @@ Future<Response> refresh(Request req) async {
   clients.addAll({nLink: task});
   clients.remove(nLink);
   return Response.ok('OK');
+}
+
+Future<Response> getFile(Request req) async {
+  var filename = (req.params['filename']);
+  var range = <int>[];
+
+  if (req.headers.containsKey(HttpHeaders.rangeHeader)) {
+    var rng = req.headers[HttpHeaders.rangeHeader];
+    // bytes=$downloaded-$size
+    range = rng!.split('=').last.split('-').map((e) => int.parse(e)).toList();
+  }
+
+  var file = File('downloads/$filename');
+
+  if (await file.exists()) {
+    Stream<List<int>> bytesStream;
+    var fsize = (await file.stat()).size;
+    if (range.isNotEmpty) {
+      if (range.last > fsize) {
+        range.last = fsize;
+        bytesStream = file.openRead(range.first, range.last);
+      } else {
+        bytesStream = file.openRead(range.first, range.last);
+      }
+    } else {
+      bytesStream = file.openRead();
+    }
+
+    return Response.ok(bytesStream, headers: {
+      HttpHeaders.contentRangeHeader: '${range.first}-${range.last}/$fsize',
+      HttpHeaders.contentTypeHeader: ContentType.binary.mimeType,
+    });
+  } else {
+    return Response.notFound('File $filename Not Found');
+  }
 }
 
 Future<Response> cancel(Request req) async {
