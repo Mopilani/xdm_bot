@@ -51,7 +51,7 @@ class DloaderTask {
   //   Future.delayed(Duration(seconds: 10), () {
   //     // print(status());
   //     if (!stoptimer) {
-  //       timer();
+  //       timer(); 
   //     }
   //   });
   // }
