@@ -101,11 +101,12 @@ class DloaderTask {
 
     try {
       while (partialContent || firstTry) {
-        // await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(Duration(milliseconds: 100));
         var req = await client.getUrl(Uri.parse(link));
 
         if (partialContent || resume) {
-          req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
+          // req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
+          req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
         }
 
         res = await req.close();
