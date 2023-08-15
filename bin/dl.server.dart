@@ -52,7 +52,7 @@ final router = Router()
   ..post('/add', add)
   ..post('/redown', (req) => add(req, true))
   ..get('/cancel', cancel)
-  ..get('/remove', (_) {})
+  ..get('/remove', remove)
   ..get('/stop', stop)
   ..get('/resume', resume)
   ..get('/resume/<number>', resume)
@@ -159,6 +159,16 @@ Future<Response> stop(Request req) async {
   var link = req.headers['link'];
   if (clients[link] != null) {
     return Response.ok(clients[link]!.stop());
+  } else {
+    return Response.ok('Link not found in the queue');
+  }
+}
+
+Future<Response> remove(Request req) async {
+  var link = req.headers['link'];
+  if (clients[link] != null) {
+    clients.remove(link);
+    return Response.ok('Removed Successfully');
   } else {
     return Response.ok('Link not found in the queue');
   }
