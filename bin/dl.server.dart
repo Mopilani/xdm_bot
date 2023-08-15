@@ -234,9 +234,9 @@ Future<Response> recover(Request req) async {
         task.size = size;
         clients.addAll({link: task});
       }
-      return Response.ok('Recovered Successfuly');
+      // return Response.ok('Recovered Successfuly');
     } else {
-      return Response.found('Link was exits queue');
+      // return Response.found('Link was exits queue');
     }
   }
   return Response.ok('${links.length} Recovered Successfully.');
