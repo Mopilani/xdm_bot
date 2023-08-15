@@ -83,7 +83,7 @@ Future<Response> resume(Request req) async {
   }
 
   if (link == null) {
-    return Response.ok('You must provide a valid link');
+    return Response.badRequest(body: 'You must provide a valid link');
   }
   if (clients[link] == null) {
     return Response.ok('Link not exits');
@@ -110,7 +110,7 @@ Future<Response> refresh(Request req) async {
   nLink = req.headers['nLink'];
 
   if (link == null) {
-    return Response.ok('You must provide a valid link');
+    return Response.badRequest(body: 'You must provide a valid link');
   }
   if (clients[link] == null) {
     return Response.ok('Link not exits');
