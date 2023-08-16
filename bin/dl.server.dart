@@ -243,27 +243,27 @@ Future<Response> recover(Request req) async {
         print('File $fileName Not exists');
         var task = DloaderTask(link);
         task.downloaded = 0;
-        try {
-          // var res = await http.get(
-          //   Uri.parse(link),
-          //   headers: {
-          //     // HttpHeaders.rangeHeader: 'bytes=0-100',
-          //   },
-          // );
-          // res.request.;
-          // var client = HttpClient();
-          // var req = await client.getUrl(Uri.parse(link));
-          // var res1 = await req.close();
-          // res1.first;
-          // await res1.listen((event) {}).cancel();
-          // var size = int.parse(
-          //   (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
-          // );
-          // task.size = size;
-        } catch (e) {
-          print(e);
-          task.size = 0;
-        }
+        // try {
+        //   // var res = await http.get(
+        //   //   Uri.parse(link),
+        //   //   headers: {
+        //   //     // HttpHeaders.rangeHeader: 'bytes=0-100',
+        //   //   },
+        //   // );
+        //   // res.request.;
+        //   // var client = HttpClient();
+        //   // var req = await client.getUrl(Uri.parse(link));
+        //   // var res1 = await req.close();
+        //   // res1.first;
+        //   // await res1.listen((event) {}).cancel();
+        //   // var size = int.parse(
+        //   //   (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+        //   // );
+        //   // task.size = size;
+        // } catch (e) {
+        //   print(e);
+        //   task.size = 0;
+        // }
         task.size = 0;
         clients.addAll({link: task});
       }
