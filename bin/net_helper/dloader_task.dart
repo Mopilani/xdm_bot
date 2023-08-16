@@ -229,7 +229,7 @@ class DloaderTask {
     running = false;
     waiting = false;
     raf.closeSync();
-    return e;
+    return e.toString();
   }
 
   void onData(List<int> event) async {
