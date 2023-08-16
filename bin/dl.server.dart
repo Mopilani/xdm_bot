@@ -244,12 +244,12 @@ Future<Response> recover(Request req) async {
         var task = DloaderTask(link);
         task.downloaded = 0;
         try {
-          var res = await http.get(
-            Uri.parse(link),
-            headers: {
-              // HttpHeaders.rangeHeader: 'bytes=0-100',
-            },
-          );
+          // var res = await http.get(
+          //   Uri.parse(link),
+          //   headers: {
+          //     // HttpHeaders.rangeHeader: 'bytes=0-100',
+          //   },
+          // );
           // res.request.;
           // var client = HttpClient();
           // var req = await client.getUrl(Uri.parse(link));
