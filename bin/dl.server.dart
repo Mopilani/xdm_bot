@@ -244,8 +244,13 @@ Future<Response> recover(Request req) async {
         var task = DloaderTask(link);
         task.downloaded = 0;
         try {
-          var res = await http.get(Uri.parse(link));
-          res.body;
+          var res = await http.get(
+            Uri.parse(link),
+            headers: {
+              HttpHeaders.rangeHeader: 'bytes=0-100',
+            },
+          );
+          // res.request.;
           var size = int.parse(
             (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
           );
