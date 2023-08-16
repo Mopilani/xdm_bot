@@ -227,17 +227,18 @@ Future<Response> recover(Request req) async {
         var fstat = await file.stat();
         var task = DloaderTask(link);
         task.downloaded = fstat.size;
-        try {
-          var res = await http.get(Uri.parse(link));
-          res.body;
-          var size = int.parse(
-            (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
-          );
-          task.size = size;
-        } catch (e) {
-          print(e);
-          task.size = 0;
-        }
+        // try {
+        //   var res = await http.get(Uri.parse(link));
+        //   res.body;
+        //   var size = int.parse(
+        //     (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+        //   );
+        //   task.size = size;
+        // } catch (e) {
+        //   print(e);
+        //   task.size = 0;
+        // }
+        task.size = 0;
         clients.addAll({link: task});
       } else {
         print('File $fileName Not exists');
