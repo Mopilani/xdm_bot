@@ -115,8 +115,8 @@ class DloaderTask {
     if (resume) {
       if (await file.exists()) {
         var stat = await file.stat();
-        if (size != stat.size) {
-          size = stat.size;
+        if (downloaded != stat.size) {
+          downloaded = stat.size;
         }
       }
     } else {
