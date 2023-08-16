@@ -10,6 +10,8 @@ import 'net_helper/dloader_task.dart';
 
 import 'package:http/http.dart' as http;
 
+var version = '1.8.15 Beta';
+
 var tasksFile = File('dl.s.json');
 var linksFile = File('.links');
 
@@ -113,7 +115,7 @@ Future<Response> refresh(Request req) async {
     return Response.badRequest(body: 'You must provide a valid link');
   }
   if (clients[link] == null) {
-    return Response.found('Link not exits');
+    return Response.notFound('Link not exits');
   }
 
   List links = json.decode(await linksFile.readAsString());
@@ -173,7 +175,7 @@ Future<Response> cancel(Request req) async {
 }
 
 Future<Response> ping(Request req) async {
-  return Response.ok('Pong!');
+  return Response.ok('$version!');
 }
 
 Future<Response> shutdown(Request req) async {
