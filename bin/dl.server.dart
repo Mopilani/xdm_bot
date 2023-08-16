@@ -223,15 +223,19 @@ Future<Response> recover(Request req) async {
       var file = File('downloads/$fileName');
       if (await file.exists()) {
         var fstat = await file.stat();
-        fstat.size;
+        // fstat.size;
         var task = DloaderTask(link);
         task.downloaded = fstat.size;
-
-        var res = await http.get(Uri.parse(link));
-        var size = int.parse(
-          (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
-        );
-        task.size = size;
+        try {
+          var res = await http.get(Uri.parse(link));
+          var size = int.parse(
+            (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+          );
+          task.size = size;
+        } catch (e) {
+          print(e);
+          task.size = 0;
+        }
         clients.addAll({link: task});
       }
       // return Response.ok('Recovered Successfuly');
