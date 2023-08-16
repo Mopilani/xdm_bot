@@ -253,8 +253,8 @@ Future<Response> recover(Request req) async {
           // res.request.;
           var client = HttpClient();
           var req = await client.getUrl(Uri.parse(link));
-          await req.close();
-
+          var res1 = await req.close();
+          await res1.listen((event) {}).cancel();
           var size = int.parse(
             (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
           );
