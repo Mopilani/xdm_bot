@@ -219,13 +219,29 @@ Future<Response> recover(Request req) async {
     //   return Response.badRequest(body: 'Please provide valid link');
     // }
     if (clients[link] == null) {
+      print('Links not fount');
       var fileName = link.split('/').last;
       var file = File('downloads/$fileName');
       if (await file.exists()) {
+        print('File $fileName exists');
         var fstat = await file.stat();
-        // fstat.size;
         var task = DloaderTask(link);
         task.downloaded = fstat.size;
+        try {
+          var res = await http.get(Uri.parse(link));
+          var size = int.parse(
+            (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+          );
+          task.size = size;
+        } catch (e) {
+          print(e);
+          task.size = 0;
+        }
+        clients.addAll({link: task});
+      } else {
+        print('File $fileName Not exists');
+        var task = DloaderTask(link);
+        task.downloaded = 0;
         try {
           var res = await http.get(Uri.parse(link));
           var size = int.parse(
