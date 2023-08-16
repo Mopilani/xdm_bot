@@ -51,7 +51,7 @@ class DloaderTask {
   //   Future.delayed(Duration(seconds: 10), () {
   //     // print(status());
   //     if (!stoptimer) {
-  //       timer(); 
+  //       timer();
   //     }
   //   });
   // }
@@ -111,6 +111,20 @@ class DloaderTask {
     var fileName = link.split('/').last;
     var file = File('downloads/$fileName');
     var client = HttpClient();
+
+    if (resume) {
+      if (await file.exists()) {
+        var stat = await file.stat();
+        if (size != stat.size) {
+          size = stat.size;
+        }
+      }
+    } else {
+      if (await file.exists()) {
+        await file.delete();
+        await file.create();
+      }
+    }
 
     raf = await file.open(mode: FileMode.writeOnlyAppend);
 
