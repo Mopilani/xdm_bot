@@ -219,7 +219,7 @@ Future<Response> recover(Request req) async {
     //   return Response.badRequest(body: 'Please provide valid link');
     // }
     if (clients[link] == null) {
-      print('Links not fount');
+      print('Links not found, Adding it..');
       var fileName = link.split('/').last;
       var file = File('downloads/$fileName');
       if (await file.exists()) {
