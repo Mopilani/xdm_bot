@@ -229,6 +229,7 @@ Future<Response> recover(Request req) async {
         task.downloaded = fstat.size;
         try {
           var res = await http.get(Uri.parse(link));
+          res.body;
           var size = int.parse(
             (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
           );
@@ -244,6 +245,7 @@ Future<Response> recover(Request req) async {
         task.downloaded = 0;
         try {
           var res = await http.get(Uri.parse(link));
+          res.body;
           var size = int.parse(
             (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
           );
