@@ -247,10 +247,14 @@ Future<Response> recover(Request req) async {
           var res = await http.get(
             Uri.parse(link),
             headers: {
-              HttpHeaders.rangeHeader: 'bytes=0-100',
+              // HttpHeaders.rangeHeader: 'bytes=0-100',
             },
           );
           // res.request.;
+          var client = HttpClient();
+          var req = await client.getUrl(Uri.parse(link));
+          await req.close();
+
           var size = int.parse(
             (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
           );
