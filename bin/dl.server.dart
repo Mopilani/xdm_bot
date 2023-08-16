@@ -251,19 +251,20 @@ Future<Response> recover(Request req) async {
             },
           );
           // res.request.;
-          var client = HttpClient();
-          var req = await client.getUrl(Uri.parse(link));
-          var res1 = await req.close();
-          res1.first;
+          // var client = HttpClient();
+          // var req = await client.getUrl(Uri.parse(link));
+          // var res1 = await req.close();
+          // res1.first;
           // await res1.listen((event) {}).cancel();
-          var size = int.parse(
-            (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
-          );
-          task.size = size;
+          // var size = int.parse(
+          //   (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+          // );
+          // task.size = size;
         } catch (e) {
           print(e);
           task.size = 0;
         }
+        task.size = 0;
         clients.addAll({link: task});
       }
       // return Response.ok('Recovered Successfuly');
