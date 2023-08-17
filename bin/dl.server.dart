@@ -47,11 +47,14 @@ Future<void> tick() async {
       if (!entry.value.started || entry.value.waiting) {
         print("PIP-X");
         try {
-          if (entry.value.waiting) {
-            await clients[entry.key]!.start();
-          } else {
-            await clients[entry.key]!.resume();
-          }
+          await clients[entry.key]!.start();
+        } catch (e) {
+          print(e);
+        }
+      }
+      if (entry.value.started && entry.value.waiting) {
+        try {
+          await clients[entry.key]!.resume();
         } catch (e) {
           print(e);
         }
