@@ -64,6 +64,8 @@ Future<void> tick() async {
 Map<String, DloaderTask> clients = {};
 
 final router = Router()
+  ..get('/fdl', fastdownload) // Add task
+  //
   ..post('/add', add)
   ..post('/redown', (req) => add(req, true))
   ..get('/cancel', cancel)
@@ -79,6 +81,25 @@ final router = Router()
   ..get('/tasks', tasks)
   ..get('/jsapi/tasks', tasksInJson)
   ..get('/shutdown', shutdown);
+
+Future<Response> fastdownload(Request req, [bool redown = false]) async {
+  var link = req.headers['link'];
+  if (link == null) {
+    return Response.badRequest(body: 'You must provide a valid link');
+  }
+  if (clients[link] != null && !redown) {
+    return Response.found('Link was exits');
+  }
+
+  List links = json.decode(await linksFile.readAsString());
+  links.add(link);
+  await linksFile.writeAsString(json.encode(links));
+
+  var task = DloaderTask(link);
+  task.speedit();
+  clients.addAll({link: task});
+  return Response.ok('OK');
+}
 
 Future<Response> resume(Request req) async {
   var taskNumber = int.tryParse(req.params['number'] ?? 'NA');
