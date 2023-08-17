@@ -70,7 +70,7 @@ Future<void> tick() async {
 Map<String, DloaderTask> clients = {};
 
 final router = Router()
-  ..get('/fdl', fastdownload) // Add task
+  ..post('/fdl', fastdownload) // Add task
   //
   ..post('/add', add)
   ..post('/redown', (req) => add(req, true))
