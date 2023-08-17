@@ -301,7 +301,15 @@ Future<Response> stop(Request req) async {
 
 Future<Response> remove(Request req) async {
   var link = req.headers['link'];
+  var deleteFiles = req.headers['deleteFiles'];
   if (clients[link] != null) {
+    if (deleteFiles == 'true') {
+      var client = clients[link];
+      var file = File('downloads/${client!.filename}');
+      if (await file.exists()) {
+        await file.delete();
+      }
+    }
     clients.remove(link);
     List links = json.decode(await linksFile.readAsString());
     links.remove(link);
