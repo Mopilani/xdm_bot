@@ -293,7 +293,7 @@ Future<Response> recover(Request req) async {
 Future<Response> stop(Request req) async {
   var link = req.headers['link'];
   if (clients[link] != null) {
-    return Response.ok(clients[link]!.stop());
+    return Response.ok(await clients[link]!.stop());
   } else {
     return Response.ok('Link not found in the queue');
   }
