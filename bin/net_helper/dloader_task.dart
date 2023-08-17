@@ -197,6 +197,7 @@ class DloaderTask {
     stoptimer = true;
     running = false;
     waiting = false;
+    started = false;
     raf.closeSync();
     return ('Stopped successfuly');
   }
@@ -215,6 +216,7 @@ class DloaderTask {
     stoptimer = true;
     running = false;
     waiting = false;
+    started = false;
     if (downloaded == size) {
       finished = true;
     }
@@ -228,6 +230,7 @@ class DloaderTask {
     stoptimer = true;
     running = false;
     waiting = false;
+    started = false;
     raf.closeSync();
     return e.toString();
   }
