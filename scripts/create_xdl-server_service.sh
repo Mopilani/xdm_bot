@@ -12,4 +12,4 @@ WantedBy=multi-user.target
 " > echo xdl-server
 
 systemctl daemon-reload
-systemctl start xdm-server
+systemctl start xdl-server
