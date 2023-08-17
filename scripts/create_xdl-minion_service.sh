@@ -4,7 +4,7 @@ Description=XDL Minion Server
 [Service]
 User=root
 WorkingDirectory=/root/xdm_bot
-ExecStart=dart bin/dlm.server.dart
+ExecStart=dart run bin/dlm.server.dart
 Restart=always
 
 [Install]

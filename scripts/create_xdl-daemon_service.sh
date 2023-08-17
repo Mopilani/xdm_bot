@@ -4,7 +4,7 @@ Description=XDL Daemon Server
 [Service]
 User=root
 WorkingDirectory=/root/xdm_bot
-ExecStart=dart bin/dld.server.dart
+ExecStart=dart run bin/dld.server.dart
 Restart=always
 
 [Install]

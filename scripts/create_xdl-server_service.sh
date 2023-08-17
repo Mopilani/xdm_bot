@@ -4,7 +4,7 @@ Description=XDM Download Server Service
 [Service]
 User=root
 WorkingDirectory=/root/xdm_bot
-ExecStart=dart bin/dl.server.dart
+ExecStart=dart run bin/dl.server.dart
 Restart=always
 
 [Install]
