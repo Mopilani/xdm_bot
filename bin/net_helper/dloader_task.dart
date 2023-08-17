@@ -74,6 +74,7 @@ class DloaderTask {
       'stoptimer': stoptimer,
       'running': running,
       'finished': finished,
+      'waiting': waiting,
     };
   }
 
@@ -160,6 +161,7 @@ class DloaderTask {
 
         started = true;
         running = true;
+        waiting = false;
 
         if (res.headers[HttpHeaders.contentRangeHeader] != null) {
           size = int.parse(
