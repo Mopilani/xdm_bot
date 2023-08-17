@@ -4,6 +4,7 @@ import 'dart:isolate';
 
 class DloaderTask {
   late String link;
+  late String filename;
 
   DloaderTask(this.link);
 
@@ -108,8 +109,8 @@ class DloaderTask {
   }
 
   Future<String> start([bool resume = false]) async {
-    var fileName = link.split('/').last;
-    var file = File('downloads/$fileName');
+    filename = link.split('/').last;
+    var file = File('downloads/$filename');
     var client = HttpClient();
 
     if (resume) {
