@@ -202,8 +202,13 @@ class DloaderTask {
     }
   }
 
+  var minionsSubs = <StreamSubscription>[];
+  var minionsRafs = <RandomAccessFile>[];
+  List<(int start, int end, bool done)> ranges =
+      <(int start, int end, bool done)>[];
+
   Future<String> speedit(
-      [bool resume = false, List<String> clients = const []]) async {
+      [bool resume = false, List<String> minions = const []]) async {
     filename = link.split('/').last;
     var file = File('downloads/$filename');
     var client = HttpClient();
@@ -230,71 +235,119 @@ class DloaderTask {
     // get range
 
     try {
-      for (var clientUrl in clients) {
-        var req = await client.getUrl(Uri.parse(clientUrl));
-        if (partialContent || resume) {
-          // req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
-          req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
+      // Request for file downlaod to get file size
+      var req = await client.getUrl(Uri.parse(link));
+
+      var rres = await req.close();
+
+      if (_continue(rres.statusCode)) {
+        // continue
+      } else {
+        return 'In Queue, Waiting...';
+      }
+
+      started = true;
+      running = true;
+      waiting = false;
+
+      if (res.headers[HttpHeaders.contentRangeHeader] != null) {
+        size = int.parse(
+          (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+        );
+        int expectedSize = downloaded +
+            int.parse(
+              (res.headers[HttpHeaders.contentLengthHeader]![0]),
+            );
+        print('size: $size == expectedSize: $expectedSize');
+        if (size == expectedSize || expectedSize > size) {
+          partialContent = false;
+        }
+      } else {
+        if (res.headers[HttpHeaders.contentLengthHeader] != null) {
+          size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
         }
       }
-      while (partialContent || firstTry) {
-        await Future.delayed(Duration(milliseconds: 100));
-        var req = await client.getUrl(Uri.parse(link));
 
+      var minionsCount = minions.length;
+      var remaining = size % minionsCount;
+      var fixedSize = size - remaining;
+      var segSize = (fixedSize / minionsCount).round();
+      var point = 0;
+      var overbytesFixed = false;
+      for (var _ in minions) {
+        if (overbytesFixed) {
+          ranges.add((point, point + segSize, false));
+          point = point + segSize;
+        } else {
+          ranges.add((point, point + segSize + remaining, false));
+          point = point + segSize + remaining;
+          overbytesFixed = true;
+        }
+      }
+
+      sub = res.listen(
+        (d) => onMutliPartFileData(d, raf, 0),
+        // onDone: onDone,
+        onError: onError,
+      );
+
+      minionsSubs.add(sub);
+      minionsRafs.add(raf);
+
+      for (int i = 0; i < minions.length; i++) {
+        var minionUrl = minions[i];
+        var req = await client.getUrl(Uri.parse(minionUrl));
         if (partialContent || resume) {
           // req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
           req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
         }
+        var file = File('downloads/$filename');
 
-        res = await req.close();
-
-        print(
-          '---------------------------------------'
-          'ReqHeaders: ${req.headers} :ReqHeaders'
-          '---------------------------------------',
-        );
-
-        print(
-          'StatusCode: ${res.statusCode} :StatusCode\n'
-          'Headers: ${res.headers} :Headers',
-        );
-
-        if (_continue(res.statusCode)) {
-          // continue
-        } else {
-          return 'In Queue, Waiting...';
-        }
-
-        started = true;
-        running = true;
-        waiting = false;
-
-        if (res.headers[HttpHeaders.contentRangeHeader] != null) {
-          size = int.parse(
-            (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
-          );
-          int expectedSize = downloaded +
-              int.parse(
-                (res.headers[HttpHeaders.contentLengthHeader]![0]),
-              );
-          print('size: $size == expectedSize: $expectedSize');
-          if (size == expectedSize || expectedSize > size) {
-            partialContent = false;
+        if (resume) {
+          if (await file.exists()) {
+            var stat = await file.stat();
+            if (downloaded != stat.size) {
+              downloaded = stat.size;
+            }
           }
         } else {
-          if (res.headers[HttpHeaders.contentLengthHeader] != null) {
-            size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
+          if (await file.exists()) {
+            await file.delete();
+            await file.create();
           }
         }
 
-        sub = res.listen(
-          onData,
+        RandomAccessFile raf = await file.open(mode: FileMode.writeOnlyAppend);
+
+        var sub = res.listen(
+          (d) => onMutliPartFileData(d, raf, i + 1),
           // onDone: onDone,
           onError: onError,
         );
-        await sub.asFuture();
-        firstTry = false;
+        minionsSubs.add(sub);
+        minionsRafs.add(raf);
       }
+
+      await sub.asFuture();
+      firstTry = false;
+
+      // while (partialContent || firstTry) {
+      //   await Future.delayed(Duration(milliseconds: 100));
+      //   var req = await client.getUrl(Uri.parse(link));
+
+      //   if (partialContent || resume) {
+      //     // req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
+      //     req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
+      //   }
+
+      //   res = await req.close();
+
+      //   // if (_continue(res.statusCode)) {
+      //   //   // continue
+      //   // } else {
+      //   //   return 'In Queue, Waiting...';
+      //   // }
+      // }
       return onDone();
     } catch (e, s) {
       return onError(e, s);
@@ -346,6 +399,14 @@ class DloaderTask {
 
   void onData(List<int> event) async {
     downloaded += event.length;
+    raf.writeFromSync(event);
+  }
+
+  void onMutliPartFileData(
+      List<int> event, RandomAccessFile raf, int fi) async {
+    downloaded += event.length;
+    (int, int, bool) r = ranges[fi];
+    ranges[fi] = (r.$1, r.$2 + event.length, r.$3);
     raf.writeFromSync(event);
   }
 
