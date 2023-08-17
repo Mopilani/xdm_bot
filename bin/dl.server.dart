@@ -8,8 +8,6 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'net_helper/dloader_task.dart';
 
-import 'package:http/http.dart' as http;
-
 var version = '1.8.15 Beta';
 
 var tasksFile = File('dl.s.json');
