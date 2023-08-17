@@ -102,7 +102,8 @@ Future<Response> fastdownload(Request req, [bool redown = false]) async {
   await linksFile.writeAsString(json.encode(links));
 
   var task = DloaderTask(link);
-  task.speedit();
+  var minions = json.decode(await minionsFile.readAsString());
+  task.speedit(false, minions);
   clients.addAll({link: task});
   return Response.ok('OK');
 }
