@@ -141,7 +141,10 @@ class DloaderTask {
 
         if (partialContent || resume) {
           // req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
-          req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
+          if (downloaded > size) {
+          } else {
+            req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
+          }
         }
 
         res = await req.close();
