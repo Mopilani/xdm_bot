@@ -66,7 +66,9 @@ Future<void> tick() async {
 Map<String, DloaderTask> clients = {};
 
 final router = Router()
-  ..get('/speed', speed)
+  ..get('/speed', speed) // Add task
+  ..get('/peer', peer) // Add peer
+  ///
   ..post('/add', add)
   ..post('/redown', (req) => add(req, true))
   ..get('/cancel', cancel)
@@ -416,6 +418,13 @@ Future<Response> speed(Request req, [bool redown = false]) async {
   task.speedit();
   clients.addAll({link: task});
   return Response.ok('OK');
+}
+
+Response peer(Request req) {
+  // var peersList = List.generate(10, (index) => null);
+  // for ()
+
+  return Response.ok('Ok');
 }
 
 Response t(Request req) {
