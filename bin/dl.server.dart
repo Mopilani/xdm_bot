@@ -120,12 +120,13 @@ Future<Response> refresh(Request req) async {
 
   List links = json.decode(await linksFile.readAsString());
   links.add(nLink);
+  links.remove(link);
   await linksFile.writeAsString(json.encode(links));
 
   var task = clients[link]!;
   task.link = nLink!;
   clients.addAll({nLink: task});
-  clients.remove(nLink);
+  clients.remove(link);
   return Response.ok('OK');
 }
 
