@@ -104,8 +104,12 @@ class DloaderTask {
         print('Partial_Content');
         partialContent = true;
         return true;
-      default:
+      case 200:
+        print('OK');
+        partialContent = true;
         return true;
+      default:
+        return false;
     }
   }
 
@@ -131,6 +135,105 @@ class DloaderTask {
     raf = await file.open(mode: FileMode.writeOnlyAppend);
 
     try {
+      while (partialContent || firstTry) {
+        await Future.delayed(Duration(milliseconds: 100));
+        var req = await client.getUrl(Uri.parse(link));
+
+        if (partialContent || resume) {
+          // req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
+          req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
+        }
+
+        res = await req.close();
+
+        print(
+          '---------------------------------------'
+          'ReqHeaders: ${req.headers} :ReqHeaders'
+          '---------------------------------------',
+        );
+
+        print(
+          'StatusCode: ${res.statusCode} :StatusCode\n'
+          'Headers: ${res.headers} :Headers',
+        );
+
+        if (_continue(res.statusCode)) {
+          // continue
+        } else {
+          return 'In Queue, Waiting...';
+        }
+
+        started = true;
+        running = true;
+        waiting = false;
+
+        if (res.headers[HttpHeaders.contentRangeHeader] != null) {
+          size = int.parse(
+            (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
+          );
+          int expectedSize = downloaded +
+              int.parse(
+                (res.headers[HttpHeaders.contentLengthHeader]![0]),
+              );
+          print('size: $size == expectedSize: $expectedSize');
+          if (size == expectedSize || expectedSize > size) {
+            partialContent = false;
+          }
+        } else {
+          if (res.headers[HttpHeaders.contentLengthHeader] != null) {
+            size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
+          }
+        }
+
+        sub = res.listen(
+          onData,
+          // onDone: onDone,
+          onError: onError,
+        );
+        await sub.asFuture();
+        firstTry = false;
+      }
+      return onDone();
+    } catch (e, s) {
+      return onError(e, s);
+    }
+  }
+
+  Future<String> speedit(
+      [bool resume = false, List<String> clients = const []]) async {
+    filename = link.split('/').last;
+    var file = File('downloads/$filename');
+    var client = HttpClient();
+
+    raf = await file.open(mode: FileMode.writeOnlyAppend);
+
+    if (resume) {
+      if (await file.exists()) {
+        var stat = await file.stat();
+        if (downloaded != stat.size) {
+          downloaded = stat.size;
+        }
+      }
+    } else {
+      if (await file.exists()) {
+        await file.delete();
+        await file.create();
+      }
+    }
+
+    // clients <String>[]
+    // for client
+    // range segmenter
+    // get range
+
+    try {
+      for (var clientUrl in clients) {
+        var req = await client.getUrl(Uri.parse(clientUrl));
+        if (partialContent || resume) {
+          // req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
+          req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
+        }
+      }
       while (partialContent || firstTry) {
         await Future.delayed(Duration(milliseconds: 100));
         var req = await client.getUrl(Uri.parse(link));
