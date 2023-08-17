@@ -12,6 +12,7 @@ var version = '1.8.15 Beta';
 
 var tasksFile = File('dl.s.json');
 var linksFile = File('.links');
+var minionsFile = File('dl.minions.json');
 
 void main(List<String> args) async {
   var sport = args.isNotEmpty ? args[0] : '8186';
@@ -27,6 +28,11 @@ void main(List<String> args) async {
   for (var entry in json.decode(r).entries) {
     clients.addAll({entry.key: DloaderTask.fromMap(entry.value)});
   }
+
+  if (!(await tasksFile.exists())) tasksFile.writeAsString('{}');
+  if (!(await linksFile.exists())) linksFile.writeAsString('[]');
+  if (!(await minionsFile.exists())) minionsFile.writeAsString('[]');
+
   Future.delayed(Duration(seconds: 5), () {
     tick();
   });
