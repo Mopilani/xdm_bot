@@ -56,3 +56,6 @@ Aug 17 05:50:30 ubuntu-s-1vcpu-2gb-fra1-01 dart[175719]: date: Thu, 17 Aug 2023 
 Aug 17 05:50:30 ubuntu-s-1vcpu-2gb-fra1-01 dart[175719]: server: Hosted by hostdl.com
 Aug 17 05:50:30 ubuntu-s-1vcpu-2gb-fra1-01 dart[175719]: content-length: 214
 Aug 17 05:50:30 ubuntu-s-1vcpu-2gb-fra1-01 dart[175719]:  :Headers
+
+- Add task delete dialog
+    - delete with files option
