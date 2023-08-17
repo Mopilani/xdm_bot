@@ -9,7 +9,7 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
-" > echo /etc/systemd/system/xdl-server.service
+" > /etc/systemd/system/xdl-server.service
 
 systemctl daemon-reload
 systemctl start xdl-server

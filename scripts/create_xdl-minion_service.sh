@@ -9,7 +9,7 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
-" > echo /etc/systemd/system/xdlm-server.service
+" > /etc/systemd/system/xdlm-server.service
 
 systemctl daemon-reload
 systemctl start xdlm-server
