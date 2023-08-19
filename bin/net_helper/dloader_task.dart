@@ -365,9 +365,11 @@ class DloaderTask {
           onDone: () {
             if (progress[i]['downloaded'] == progress[i]['size']) {
               progress[i]['finished'] = true;
+              progress[i]['running'] = false;
             } else if (progress[i]['downloaded'] >= progress[i]['size']) {
               progress[i]['finished'] = true;
               progress[i]['started'] = true;
+              progress[i]['running'] = false;
               throw 'The downloaded is bigger than the segment file';
             }
           },
