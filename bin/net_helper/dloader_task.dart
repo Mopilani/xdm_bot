@@ -207,8 +207,10 @@ class DloaderTask {
   // List<(int start, int end)> ranges = <(int start, int end)>[];
   List<Map<String, dynamic>> progress = [];
 
-  Future<String> speedit(
-      [bool resume = false, List<String> minions = const []]) async {
+  Future<String> speedit([
+    bool resume = false,
+    List<String> minions = const [],
+  ]) async {
     filename = link.split('/').last;
     var file = File('downloads/$filename');
     var client = HttpClient();
