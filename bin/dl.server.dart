@@ -71,6 +71,7 @@ Map<String, DloaderTask> clients = {};
 
 final router = Router()
   ..post('/fdl', fastdownload) // Add task
+  ..post('/ft', forwaredTraffic) // Add task
   //
   ..post('/add', add)
   ..post('/redown', (req) => add(req, true))
@@ -106,6 +107,21 @@ Future<Response> fastdownload(Request req, [bool redown = false]) async {
   task.speedit(false, minions);
   clients.addAll({link: task});
   return Response.ok('OK');
+}
+
+Future<Response> forwaredTraffic(Request req) async {
+  var link = req.headers['link'];
+  if (link == null) {
+    return Response.badRequest(body: 'You must provide a valid link');
+  }
+  var client = HttpClient();
+
+  var creq = await client.getUrl(Uri.parse(link));
+  creq.headers
+      .add(HttpHeaders.rangeHeader, req.headers[HttpHeaders.rangeHeader]!);
+  var res = await creq.close();
+  var stream = res;
+  return Response.ok(stream);
 }
 
 Future<Response> resume(Request req) async {
