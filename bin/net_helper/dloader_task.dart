@@ -202,10 +202,10 @@ class DloaderTask {
     }
   }
 
-  var minionsSubs = <StreamSubscription>[];
-  var minionsRafs = <RandomAccessFile>[];
-  List<(int start, int end, bool done)> ranges =
-      <(int start, int end, bool done)>[];
+  // var minionsSubs = <StreamSubscription>[];
+  // var minionsRafs = <RandomAccessFile>[];
+  // List<(int start, int end)> ranges = <(int start, int end)>[];
+  List<Map<String, dynamic>> progress = [];
 
   Future<String> speedit(
       [bool resume = false, List<String> minions = const []]) async {
@@ -250,6 +250,17 @@ class DloaderTask {
       running = true;
       waiting = false;
 
+      progress.add({
+        'range': null,
+        'size': 0,
+        'downloaded': 0,
+        'waiting': false,
+        'sub': null,
+        'raf': null,
+        'started': false,
+        'finished': false,
+      });
+
       if (res.headers[HttpHeaders.contentRangeHeader] != null) {
         size = int.parse(
           (res.headers[HttpHeaders.contentRangeHeader]![0]).split('/').last,
@@ -274,13 +285,26 @@ class DloaderTask {
       var segSize = (fixedSize / minionsCount).round();
       var point = 0;
       var overbytesFixed = false;
+
       for (var _ in minions) {
+        progress.add({
+          'range': null,
+          'size': 0,
+          'downloaded': 0,
+          'waiting': false,
+          'sub': null,
+          'raf': null,
+          'started': false,
+          'finished': false,
+        });
+
         if (overbytesFixed) {
-          ranges.add((point, point + segSize, false));
           point = point + segSize;
+          progress[0]['range'] = [point, point];
         } else {
-          ranges.add((point, point + segSize + remaining, false));
+          // ranges.add((point, point + segSize + remaining));
           point = point + segSize + remaining;
+          progress[0]['range'] = [point, point];
           overbytesFixed = true;
         }
       }
@@ -291,15 +315,28 @@ class DloaderTask {
         onError: onError,
       );
 
-      minionsSubs.add(sub);
-      minionsRafs.add(raf);
+      progress[0]['sub'] = sub;
+      progress[0]['raf'] = raf;
+      progress[0]['size'] = size;
 
       for (int i = 0; i < minions.length; i++) {
+        progress.add({
+          'done': false,
+          'range': [int, int],
+          'size': 0,
+          'downloaded': 0,
+          'waiting': false,
+          'started': false,
+          'finished': false,
+        });
+
         var minionUrl = minions[i];
         var req = await client.getUrl(Uri.parse(minionUrl));
         if (partialContent || resume) {
           // req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
-          req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
+          var range = progress[0]['range'];
+          req.headers
+              .add(HttpHeaders.rangeHeader, 'bytes=${range.$1}-${range.$2}');
         }
         var file = File('downloads/$filename');
 
@@ -317,37 +354,30 @@ class DloaderTask {
           }
         }
 
+        progress[i]['started'] = true;
+
         RandomAccessFile raf = await file.open(mode: FileMode.writeOnlyAppend);
 
         var sub = res.listen(
           (d) => onMutliPartFileData(d, raf, i + 1),
-          // onDone: onDone,
+          onDone: () {
+            if (progress[i]['downloaded'] == progress[i]['size']) {
+              progress[i]['finished'] = true;
+            } else if (progress[i]['downloaded'] >= progress[i]['size']) {
+              progress[i]['finished'] = true;
+              progress[i]['started'] = true;
+              throw 'The downloaded is bigger than the segment file';
+            }
+          },
           onError: onError,
         );
-        minionsSubs.add(sub);
-        minionsRafs.add(raf);
+        progress[0]['sub'] = (sub);
+        progress[0]['raf'] = (raf);
       }
 
       await sub.asFuture();
+
       firstTry = false;
-
-      // while (partialContent || firstTry) {
-      //   await Future.delayed(Duration(milliseconds: 100));
-      //   var req = await client.getUrl(Uri.parse(link));
-
-      //   if (partialContent || resume) {
-      //     // req.headers.add(HttpHeaders.rangeHeader, '$downloaded-');
-      //     req.headers.add(HttpHeaders.rangeHeader, 'bytes=$downloaded-$size');
-      //   }
-
-      //   res = await req.close();
-
-      //   // if (_continue(res.statusCode)) {
-      //   //   // continue
-      //   // } else {
-      //   //   return 'In Queue, Waiting...';
-      //   // }
-      // }
       return onDone();
     } catch (e, s) {
       return onError(e, s);
@@ -405,8 +435,9 @@ class DloaderTask {
   void onMutliPartFileData(
       List<int> event, RandomAccessFile raf, int fi) async {
     downloaded += event.length;
-    (int, int, bool) r = ranges[fi];
-    ranges[fi] = (r.$1, r.$2 + event.length, r.$3);
+    // (int, int) r = ranges[fi];
+    // ranges[fi] = (r.$1, r.$2 + event.length);
+    progress[fi]['downloaded'] += event.length;
     raf.writeFromSync(event);
   }
 
