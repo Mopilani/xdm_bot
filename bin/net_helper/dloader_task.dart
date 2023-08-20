@@ -62,7 +62,7 @@ class DloaderTask {
     task.stoptimer = data['stoptimer'];
     task.finished = data['finished'];
     task.fastDOp = data['fastDOp'];
-    task.progress = data['progress'];
+    task.progress = <Map<String, dynamic>>[...data['progress']];
     return task;
   }
 
@@ -260,8 +260,7 @@ class DloaderTask {
 
     try {
       // Request for file downlaod to get file size
-      var req =
-          await client.getUrl(Uri.parse(link));
+      var req = await client.getUrl(Uri.parse(link));
 
       res = await req.close();
 
