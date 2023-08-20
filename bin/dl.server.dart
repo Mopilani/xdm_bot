@@ -8,7 +8,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'net_helper/dloader_task.dart';
 
-var version = '1.9.2 Beta';
+var version = '1.9.3 Beta';
 
 var tasksFile = File('dl.s.json');
 var linksFile = File('.links');
