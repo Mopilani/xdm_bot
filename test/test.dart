@@ -2,8 +2,9 @@ import 'dart:io';
 import 'dart:math';
 
 int main() {
-  var minionsCount = 8;
-  var size = Random().nextInt(4294967296);
+  var minionsCount = 16;
+  // var size = Random().nextInt(4294967296);
+  var size = 133456187;
   var segSize = size / minionsCount;
   var r2 = size % minionsCount;
   print('Size: $size');
@@ -16,7 +17,14 @@ int main() {
   print('Seg Size: $segSize');
   print('Seg Size Rounded: ${segSize.round()}');
   print('Rest: $r2');
-  go('SKLGJSLKDJFLJWE');
+  print('Segs: ');
+  for (var i = 0; i < minionsCount; i++) {
+    if (i == 0) {
+      print('Seg: ${i + 1} ${segSize + r2}');
+    } else {
+      print('Seg: ${i + 1} $segSize');
+    }
+  }
   // static int s;
 
   exit(-1);
@@ -34,7 +42,7 @@ go(String go) {
   if (go == 'gO') {
     return 3;
   }
-  if(go == "GO") {
+  if (go == "GO") {
     return 0;
   }
 }

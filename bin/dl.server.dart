@@ -8,7 +8,7 @@ import 'package:shelf_router/shelf_router.dart';
 
 import 'net_helper/dloader_task.dart';
 
-var version = '1.8.15 Beta';
+var version = '1.9.2 Beta';
 
 var tasksFile = File('dl.s.json');
 var linksFile = File('.links');
@@ -47,18 +47,29 @@ Future<void> tick() async {
     await Future.delayed(Duration(minutes: 10));
     print("IT'S TIME-X");
     for (var entry in [...clients.entries]) {
-      print("POP-X");
+      print("Client ${entry.key}");
       if (!entry.value.started || entry.value.waiting) {
-        print("PIP-X");
+        print("Starting Waiting Task");
         try {
-          await clients[entry.key]!.start();
+          if (clients[entry.key]!.fastDOp) {
+            var minions = json.decode(await minionsFile.readAsString());
+            clients[entry.key]!.speedit(false, [...minions]);
+          } else {
+            clients[entry.key]!.start();
+          }
         } catch (e) {
           print(e);
         }
       }
       if (entry.value.started && entry.value.waiting) {
+        print("Resuming Waiting Task");
         try {
-          await clients[entry.key]!.resume();
+          if (clients[entry.key]!.fastDOp) {
+            var minions = json.decode(await minionsFile.readAsString());
+            clients[entry.key]!.speedit(true, [...minions]);
+          } else {
+            clients[entry.key]!.resume();
+          }
         } catch (e) {
           print(e);
         }
@@ -71,7 +82,7 @@ Map<String, DloaderTask> clients = {};
 
 final router = Router()
   ..post('/fdl', fastdownload) // Add task
-  ..post('/ft', forwaredTraffic) // Add task
+  ..get('/ft', forwaredTraffic) // Add task
   //
   ..post('/add', add)
   ..post('/redown', (req) => add(req, true))
@@ -98,14 +109,19 @@ Future<Response> fastdownload(Request req, [bool redown = false]) async {
     return Response.found('Link was exits');
   }
 
+  // try {
   List links = json.decode(await linksFile.readAsString());
   links.add(link);
   await linksFile.writeAsString(json.encode(links));
-
   var task = DloaderTask(link);
+  task.fastDOp = true;
   var minions = json.decode(await minionsFile.readAsString());
-  task.speedit(false, minions);
+  task.speedit(false, [...minions]);
   clients.addAll({link: task});
+  // } catch (e, s) {
+  //   print(e);
+  //   print(s);
+  // }
   return Response.ok('OK');
 }
 
@@ -121,7 +137,11 @@ Future<Response> forwaredTraffic(Request req) async {
       .add(HttpHeaders.rangeHeader, req.headers[HttpHeaders.rangeHeader]!);
   var res = await creq.close();
   var stream = res;
-  return Response.ok(stream);
+
+  var headers = <String, String>{};
+  res.headers.forEach((name, values) => headers.addAll({name: values[0]}));
+
+  return Response(res.statusCode, headers: headers, body: stream);
 }
 
 Future<Response> resume(Request req) async {
@@ -144,7 +164,12 @@ Future<Response> resume(Request req) async {
     return Response.found('Link not exits');
   }
   var task = clients[link]!;
-  await task.resume();
+  if (task.fastDOp) {
+    var minions = json.decode(await minionsFile.readAsString());
+    task.speedit(true, [...minions]);
+  } else {
+    task.resume();
+  }
   clients.addAll({link: task});
   return Response.ok('OK');
 }
