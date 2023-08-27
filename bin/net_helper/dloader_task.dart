@@ -200,14 +200,14 @@ class DloaderTask {
           if (size == expectedSize || expectedSize > size) {
             partialContent = false;
           }
-          if (size == downloaded) {
+          if (size != 0 && size == downloaded) {
             return onDone();
           }
         } else {
           if (res.headers[HttpHeaders.contentLengthHeader] != null) {
             size = int.tryParse(res.headers['content-length']?[0] ?? '0') ?? 0;
           }
-          if (size == downloaded) {
+          if (size != 0 && size == downloaded) {
             return onDone();
           }
         }
