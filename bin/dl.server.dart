@@ -48,19 +48,19 @@ Future<void> tick() async {
     print("IT'S TIME-X");
     for (var entry in [...clients.entries]) {
       print("Client ${entry.key}");
-      if (!entry.value.started || entry.value.waiting) {
-        print("Starting Waiting Task");
-        try {
-          if (clients[entry.key]!.fastDOp) {
-            var minions = json.decode(await minionsFile.readAsString());
-            clients[entry.key]!.speedit(false, [...minions]);
-          } else {
-            clients[entry.key]!.start();
-          }
-        } catch (e) {
-          print(e);
-        }
-      }
+      // if (!entry.value.started || entry.value.waiting) {
+      //   print("Starting Waiting Task");
+      //   try {
+      //     if (clients[entry.key]!.fastDOp) {
+      //       var minions = json.decode(await minionsFile.readAsString());
+      //       clients[entry.key]!.speedit(false, [...minions]);
+      //     } else {
+      //       clients[entry.key]!.start();
+      //     }
+      //   } catch (e) {
+      //     print(e);
+      //   }
+      // }
       if (entry.value.started && entry.value.waiting) {
         print("Resuming Waiting Task");
         try {
