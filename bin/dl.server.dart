@@ -82,6 +82,8 @@ Map<String, DloaderTask> clients = {};
 
 final router = Router()
   ..post('/fdl', fastdownload) // Add task
+  ..get('/hiamip', hiIamInvisableProxy) // Add task
+  ..post('/fdl', fastdownload) // Add task
   ..get('/ft', forwaredTraffic) // Add task
   //
   ..post('/add', add)
@@ -123,6 +125,25 @@ Future<Response> fastdownload(Request req, [bool redown = false]) async {
   //   print(s);
   // }
   return Response.ok('OK');
+}
+
+Future<Response> hiIamInvisableProxy(Request req) async {
+  var link = req.headers['link'];
+  if (link == null) {
+    return Response.badRequest(body: 'You must provide a valid link');
+  }
+  var client = HttpClient();
+
+  var creq = await client.getUrl(Uri.parse(link));
+  creq.headers
+      .add(HttpHeaders.rangeHeader, req.headers[HttpHeaders.rangeHeader]!);
+  var res = await creq.close();
+  var stream = res;
+
+  var headers = <String, String>{};
+  res.headers.forEach((name, values) => headers.addAll({name: values[0]}));
+
+  return Response(res.statusCode, headers: headers, body: stream);
 }
 
 Future<Response> forwaredTraffic(Request req) async {
