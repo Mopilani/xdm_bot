@@ -81,8 +81,8 @@ Future<void> tick() async {
 Map<String, DloaderTask> clients = {};
 
 final router = Router()
-  ..post('/fdl', fastdownload) // Add task
-  ..get('/hiamip', hiIamInvisableProxy) // Add task
+  ..post('/uip', useInvisableProxy) // Add task
+  ..get('/hiamip', hiIamInvisableProxy) 
   ..post('/fdl', fastdownload) // Add task
   ..get('/ft', forwaredTraffic) // Add task
   //
@@ -101,6 +101,31 @@ final router = Router()
   ..get('/tasks', tasks)
   ..get('/jsapi/tasks', tasksInJson)
   ..get('/shutdown', shutdown);
+
+Future<Response> useInvisableProxy(Request req, [bool redown = false]) async {
+  var link = req.headers['link'];
+  if (link == null) {
+    return Response.badRequest(body: 'You must provide a valid link');
+  }
+  if (clients[link] != null && !redown) {
+    return Response.found('Link was exits');
+  }
+
+  // try {
+  List links = json.decode(await linksFile.readAsString());
+  links.add(link);
+  await linksFile.writeAsString(json.encode(links));
+  var task = DloaderTask(link);
+  task.fastDOp = true;
+  var minions = json.decode(await minionsFile.readAsString());
+  task.speedit(false, [...minions]);
+  clients.addAll({link: task});
+  // } catch (e, s) {
+  //   print(e);
+  //   print(s);
+  // }
+  return Response.ok('OK');
+}
 
 Future<Response> fastdownload(Request req, [bool redown = false]) async {
   var link = req.headers['link'];
